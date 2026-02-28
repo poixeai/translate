@@ -29,7 +29,11 @@
       "@/*": [
         "./src/*"
       ]
-    }
+    },
+
+    // i18n
+    // "resolveJsonModule": true,
+    // "esModuleInterop": true
   },
   "include": ["src"]
 }

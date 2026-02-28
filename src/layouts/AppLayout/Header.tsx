@@ -1,4 +1,5 @@
 import GithubLink from "@/components/common/GithubLink";
+import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import ThemeSwitcher from "@/components/common/ThemeSwitcher";
 import { Link } from "react-router-dom";
 
@@ -12,8 +13,8 @@ export default function Header() {
           <span className="text-xl font-semibold tracking-tight">Poixe Translate</span>
         </Link>
 
-        <div className="flex gap-2">
-          <div>选择语言</div>
+        <div className="flex gap-2 items-center">
+          <LanguageSwitcher />
 
           <ThemeSwitcher />
           

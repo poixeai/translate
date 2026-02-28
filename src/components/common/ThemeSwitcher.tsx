@@ -18,12 +18,19 @@ export default function ThemeSwitcher() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="hover:cursor-pointer">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="hover:cursor-pointer"
+                >
                     {current?.icon}
                 </Button>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent>
+            <DropdownMenuContent
+                align="end"
+                sideOffset={8}
+            >
                 {items.map((it) => (
                     <DropdownMenuItem key={it.mode} onClick={() => setMode(it.mode)} className="hover:cursor-pointer">
                         <span>{it.icon}</span>
