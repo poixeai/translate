@@ -24,3 +24,11 @@ function Separator({
 }
 
 export { Separator }
+
+
+// ==== demo ====
+// 默认粗细
+{/* <Separator/> */}
+
+// 更细
+{/* <Separator className="bg-border/60" /> */}

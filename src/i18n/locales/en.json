@@ -1,10 +1,26 @@
 {
-    "common": {
-        "test": "This is a test string.",
-        "theme": {
-            "light": "Light",
-            "dark": "Dark",
-            "system": "System"
-        }
+  "common": {
+    "test": "This is a test string.",
+    "settings": {
+      "theme": {
+        "select": "Select Theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      },
+      "language": {
+        "select": "Select Language"
+      },
+      "general": {
+        "appearance": "Appearance",
+        "language": "Language"
+      },
+      "sidebar": {
+        "general": "General",
+        "models": "Models",
+        "prompts": "Prompts",
+        "about": "About"
+      }
     }
+  }
 }

@@ -6,9 +6,9 @@ import { Button } from "../ui/button";
 import { useTranslation } from "react-i18next";
 
 const items: { mode: ThemeMode; labelKey: string; icon: React.ReactNode }[] = [
-    { mode: "light", labelKey: "common.theme.light", icon: < Sun className="h-4 w-4" /> },
-    { mode: "dark", labelKey: "common.theme.dark", icon: < Moon className="h-4 w-4" /> },
-    { mode: "system", labelKey: "common.theme.system", icon: < Monitor className="h-4 w-4" /> },
+    { mode: "light", labelKey: "common.settings.theme.light", icon: < Sun className="h-4 w-4" /> },
+    { mode: "dark", labelKey: "common.settings.theme.dark", icon: < Moon className="h-4 w-4" /> },
+    { mode: "system", labelKey: "common.settings.theme.system", icon: < Monitor className="h-4 w-4" /> },
 ]
 
 export default function ThemeSwitcher() {

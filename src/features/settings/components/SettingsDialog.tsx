@@ -8,23 +8,25 @@ import {
 } from "@/components/ui/dialog";
 import { Settings, Box, BookOpenText, Info, X } from "lucide-react";
 import { useState } from "react";
-import { Button } from "../ui/button";
-import PageFiller from "../dev/PageFiller";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
+import GeneralPanel from "./panels/GeneralPanel";
+import { useTranslation } from "react-i18next";
 
 const SIDEBAR = [
-    { key: "general", icon: Settings, label: "常规" },
-    { key: "provider", icon: Box, label: "模型厂商" },
-    { key: "prompt", icon: BookOpenText, label: "提示词" },
-    { key: "about", icon: Info, label: "关于" },
+    { key: "general", icon: Settings, labelKey: "common.settings.sidebar.general" },
+    { key: "provider", icon: Box, labelKey: "common.settings.sidebar.models" },
+    { key: "prompt", icon: BookOpenText, labelKey: "common.settings.sidebar.prompts" },
+    { key: "about", icon: Info, labelKey: "common.settings.sidebar.about" },
 ] as const;
 
 type PanelKey = typeof SIDEBAR[number]["key"];
 
-export default function SettingsDialog() {
+export function SettingsDialog() {
     const [open, setOpen] = useState(false);
     const [panel, setPanel] = useState<PanelKey>("general");
+    const { t } = useTranslation();
 
     return (
         <>
@@ -46,7 +48,7 @@ export default function SettingsDialog() {
                     {/* 正式内容 */}
                     <div className="flex w-full h-full min-h-0">
                         {/* 左侧侧边栏 */}
-                        <div className="w-45 bg-[#f9f9f9] p-1">
+                        <div className="w-45 bg-[#f9f9f9] dark:bg-[#1e1e1e] p-1 rounded-l-lg">
                             {/* 侧边栏 顶部关闭按钮 */}
                             <div className="h-10 flex items-center">
                                 <DialogClose asChild>
@@ -63,29 +65,29 @@ export default function SettingsDialog() {
                                         key={item.key}
                                         onClick={() => setPanel(item.key)}
                                         className={cn(
-                                            "w-full hover:cursor-pointer h-9 flex items-center gap-3 px-2 rounded-md hover:bg-[#efefef]",
-                                            panel === item.key && "bg-[#efefef]"
+                                            "w-full hover:cursor-pointer h-9 flex items-center gap-3 px-2 rounded-md hover:bg-[#efefef] dark:hover:bg-[#353535]",
+                                            panel === item.key && "bg-[#efefef] dark:bg-[#353535]"
                                         )}
                                     >
                                         <item.icon className="w-4 h-4" />
-                                        <span>{item.label}</span>
+                                        <span>{t(item.labelKey)}</span>
                                     </button>
                                 ))}
                             </div>
                         </div>
 
                         {/* 右侧内容区 */}
-                        <div className="flex-1 py-1 px-2 flex flex-col min-h-0">
+                        <div className="flex-1 py-1 px-2 flex flex-col min-h-0 dark:bg-[#212121]">
                             {/* 右侧内容 顶部标题 */}
                             <div className="h-10 flex items-center my-2">
-                                {SIDEBAR.find(s => s.key === panel)?.label}
+                                {t(SIDEBAR.find(s => s.key === panel)?.labelKey || "")}
                             </div>
 
                             <Separator />
 
                             {/* 右侧内容 中心内容 */}
-                            <div className="flex-1 overflow-y-auto min-h-0">
-                                <PageFiller />
+                            <div className="flex-1 overflow-y-auto min-h-0 text-sm">
+                                {panel === "general" && <GeneralPanel />}
                             </div>
                         </div>
                     </div>

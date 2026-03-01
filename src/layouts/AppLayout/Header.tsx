@@ -1,10 +1,8 @@
 import GithubLink from "@/components/common/GithubLink";
-import LanguageSwitcher from "@/components/common/LanguageSwitcher";
-import ThemeSwitcher from "@/components/common/ThemeSwitcher";
 import { Link } from "react-router-dom";
 import VerticalDivider from "@/components/common/VerticalDivider";
-import SettingsDialog from "@/components/common/SettingsDialog";
 import DemoSettingsDialog from "@/components/common/DemoSettingsDialog";
+import { SettingsDialog } from "@/features/settings";
 
 export default function Header() {
   return (
@@ -17,16 +15,8 @@ export default function Header() {
         </Link>
 
         <div className="flex gap-2 items-center">
-          <LanguageSwitcher />
-
-          <ThemeSwitcher />
-
-          {/* 分隔符 */}
-          <VerticalDivider />
-
           <GithubLink />
-
-          {/* 分隔符 */}
+          
           <VerticalDivider />
 
           <SettingsDialog />
