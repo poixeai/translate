@@ -20,6 +20,10 @@
         "models": "Models",
         "prompts": "Prompts",
         "about": "About"
+      },
+      "about": {
+        "description": "Poixe Translate is an open-source translation tool. Based on AI large models, it supports custom model providers and provides reliable translation services.",
+        "github": "View source code on GitHub"
       }
     }
   }

@@ -13,11 +13,14 @@ import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import GeneralPanel from "./panels/GeneralPanel";
 import { useTranslation } from "react-i18next";
+import AboutPanel from "./panels/AboutPanel";
+import ModelPanel from "./panels/ModelPanel";
+import PromptPanel from "./panels/PromptPanel";
 
 const SIDEBAR = [
     { key: "general", icon: Settings, labelKey: "common.settings.sidebar.general" },
-    { key: "provider", icon: Box, labelKey: "common.settings.sidebar.models" },
-    { key: "prompt", icon: BookOpenText, labelKey: "common.settings.sidebar.prompts" },
+    { key: "models", icon: Box, labelKey: "common.settings.sidebar.models" },
+    { key: "prompts", icon: BookOpenText, labelKey: "common.settings.sidebar.prompts" },
     { key: "about", icon: Info, labelKey: "common.settings.sidebar.about" },
 ] as const;
 
@@ -46,11 +49,11 @@ export function SettingsDialog() {
                     <DialogDescription className="sr-only">调整应用偏好设置</DialogDescription>
 
                     {/* 正式内容 */}
-                    <div className="flex w-full h-full min-h-0">
-                        {/* 左侧侧边栏 */}
-                        <div className="w-45 bg-[#f9f9f9] dark:bg-[#1e1e1e] p-1 rounded-l-lg">
+                    <div className="flex flex-col sm:flex-row w-full h-full min-h-0 min-w-0 overflow-hidden">
+                        {/* 侧边栏 */}
+                        <div className="w-full sm:w-45 bg-[#f9f9f9] dark:bg-[#1e1e1e] sm:p-1 sm:rounded-l-lg rounded-t-lg sm:rounded-t-none">
                             {/* 侧边栏 顶部关闭按钮 */}
-                            <div className="h-10 flex items-center">
+                            <div className="h-10 flex items-center justify-end sm:justify-start dark:bg-[#212121] sm:dark:bg-[#1e1e1e]">
                                 <DialogClose asChild>
                                     <Button variant="ghost" size="sm" className="hover:cursor-pointer">
                                         <X className="w-4 h-4" />
@@ -59,13 +62,13 @@ export function SettingsDialog() {
                             </div>
 
                             {/* 侧边栏 导航列表 */}
-                            <div className="text-sm">
+                            <div className="text-sm flex flex-row gap-1 sm:gap-0 sm:flex-col p-1 sm:p-0 overflow-x-auto">
                                 {SIDEBAR.map((item) => (
                                     <button
                                         key={item.key}
                                         onClick={() => setPanel(item.key)}
                                         className={cn(
-                                            "w-full hover:cursor-pointer h-9 flex items-center gap-3 px-2 rounded-md hover:bg-[#efefef] dark:hover:bg-[#353535]",
+                                            "flex-none sm:w-full hover:cursor-pointer h-9 flex items-center gap-3 px-2 rounded-md hover:bg-[#efefef] dark:hover:bg-[#353535]",
                                             panel === item.key && "bg-[#efefef] dark:bg-[#353535]"
                                         )}
                                     >
@@ -76,18 +79,24 @@ export function SettingsDialog() {
                             </div>
                         </div>
 
-                        {/* 右侧内容区 */}
+                        {/* 内容区 */}
                         <div className="flex-1 py-1 px-2 flex flex-col min-h-0 dark:bg-[#212121]">
-                            {/* 右侧内容 顶部标题 */}
-                            <div className="h-10 flex items-center my-2">
+                            {/* 内容区 顶部标题 */}
+                            <div className="h-10 hidden sm:flex items-center my-2">
                                 {t(SIDEBAR.find(s => s.key === panel)?.labelKey || "")}
                             </div>
 
                             <Separator />
 
-                            {/* 右侧内容 中心内容 */}
+                            {/* 内容区 中心内容 */}
                             <div className="flex-1 overflow-y-auto min-h-0 text-sm">
                                 {panel === "general" && <GeneralPanel />}
+
+                                {panel === "models" && <ModelPanel />}
+
+                                {panel === "prompts" && <PromptPanel />}
+
+                                {panel === "about" && <AboutPanel />}
                             </div>
                         </div>
                     </div>

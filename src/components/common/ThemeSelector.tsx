@@ -29,7 +29,11 @@ export default function ThemeSelector() {
                 </SelectTrigger>
                 <SelectContent position="popper" className="dark:bg-[#353535]">
                     {items.map((it) => (
-                        <SelectItem key={it.mode} value={it.mode} className="hover:cursor-pointer">
+                        <SelectItem
+                            key={it.mode}
+                            value={it.mode}
+                            className="hover:cursor-pointer"
+                        >
                             {t(it.labelKey)}
                         </SelectItem>
                     ))}

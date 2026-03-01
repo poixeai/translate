@@ -1,11 +1,4 @@
 import { Separator } from "@/components/ui/separator";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import ThemeSelector from "@/components/common/ThemeSelector";
 import LanguageSelector from "@/components/common/LanguageSelector";
 import { useTranslation } from "react-i18next";

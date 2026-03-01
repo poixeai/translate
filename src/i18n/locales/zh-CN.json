@@ -20,6 +20,10 @@
         "models": "模型",
         "prompts": "提示词",
         "about": "关于"
+      },
+      "about": {
+        "description": "Poixe Translate 是一个开源的翻译工具。基于 AI 大模型，支持自定义模型厂商，提供可靠的翻译服务。",
+        "github": "在 GitHub 上查看源代码"
       }
     }
   }

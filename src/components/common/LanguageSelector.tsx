@@ -27,13 +27,14 @@ export default function LanguageSelector() {
                 <SelectTrigger className="hover:cursor-pointer">
                     <SelectValue placeholder={t("common.settings.language.select")} />
                 </SelectTrigger>
-                <SelectContent position="popper">
+                <SelectContent position="popper" className="dark:bg-[#353535]">
                     {LANGUAGES.map((lang) => {
                         return (
                             <SelectItem
                                 key={lang.code}
                                 value={lang.code}
-                                className="hover:cursor-pointer">
+                                className="hover:cursor-pointer"
+                            >
                                 {lang.label}
                             </SelectItem>
                         )
