@@ -2,25 +2,37 @@ import GithubLink from "@/components/common/GithubLink";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import ThemeSwitcher from "@/components/common/ThemeSwitcher";
 import { Link } from "react-router-dom";
+import VerticalDivider from "@/components/common/VerticalDivider";
+import SettingsDialog from "@/components/common/SettingsDialog";
+import DemoSettingsDialog from "@/components/common/DemoSettingsDialog";
 
 export default function Header() {
   return (
-    <header className="w-full border-b dark:border-b-white bg-[#FBFBFB] dark:bg-[#0B0B0C] text-gray-900 dark:text-gray-100 ">
-      <nav className="max-w-7xl mx-auto flex h-10 justify-between items-center">
+    <div className="w-full border-b dark:border-b-white bg-[#FBFBFB] dark:bg-[#0B0B0C] text-gray-900 dark:text-gray-100 ">
+      <nav className="max-w-7xl mx-auto flex h-10 justify-between items-center px-2">
 
         <Link to={"/"} className="flex items-center gap-2">
           <img src="/x.svg" alt="logo" className="w-6 h-6" />
-          <span className="text-xl font-semibold tracking-tight">Poixe Translate</span>
+          <span className="hidden sm:inline text-xl font-semibold tracking-tight">Poixe Translate</span>
         </Link>
 
         <div className="flex gap-2 items-center">
           <LanguageSwitcher />
 
           <ThemeSwitcher />
-          
+
+          {/* 分隔符 */}
+          <VerticalDivider />
+
           <GithubLink />
+
+          {/* 分隔符 */}
+          <VerticalDivider />
+
+          <SettingsDialog />
+          <DemoSettingsDialog />
         </div>
       </nav>
-    </header>
+    </div>
   );
 }
