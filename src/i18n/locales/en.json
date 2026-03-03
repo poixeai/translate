@@ -1,6 +1,13 @@
 {
   "common": {
     "test": "This is a test string.",
+    "button": {
+      "create": "Create",
+      "save": "Save",
+      "delete": "Delete",
+      "deleting": "Deleting...",
+      "cancel": "Cancel"
+    },
     "settings": {
       "theme": {
         "select": "Select Theme",
@@ -17,13 +24,58 @@
       },
       "sidebar": {
         "general": "General",
-        "models": "Models",
+        "providers": "Models",
         "prompts": "Prompts",
         "about": "About"
       },
       "about": {
         "description": "Poixe Translate is an open-source translation tool. Based on AI large models, it supports custom model providers and provides reliable translation services.",
         "github": "View source code on GitHub"
+      },
+      "providers": {
+        "header": "Add model providers, customize API endpoints, and support 4 mainstream protocols.",
+        "add_button": "Add Provider",
+        "sheet": {
+          "name": "Name",
+          "api_style": "API Style",
+          "model_count": "Model Count"
+        },
+        "dialog": {
+          "title_create": "Add Model Provider",
+          "title_edit": "Edit Model Provider",
+          "name": "Name",
+          "api_url": "API Endpoint",
+          "api_key": "API Key",
+          "api_style": "API Style",
+          "select_placeholder": "Select API Style",
+          "models": "Model List (separated by commas or new lines)"
+        },
+        "delete": {
+          "title": "Delete Model Provider",
+          "content": "Deletion will take effect immediately. After deletion, you will no longer be able to send requests using this provider configuration, and it cannot be recovered.",
+          "confirm": "About to delete:"
+        }
+      },
+      "prompts": {
+        "header": "Used as a system prompt during translation to control terminology and style.",
+        "add_button": "Add Prompt",
+        "sheet": {
+          "name": "Name",
+          "content": "Content"
+        },
+        "dialog": {
+          "title_create": "Add Prompt",
+          "title_edit": "Edit Prompt",
+          "name": "Name",
+          "name_placeholder": "Finance",
+          "content": "Prompt Content",
+          "content_placeholder": "You are a professional translator in the finance domain. Requirements: use accurate terminology and a formal tone; keep numbers, code, and proper nouns unchanged."
+        },
+        "delete": {
+          "title": "Delete Translation Prompt",
+          "content": "This action takes effect immediately. After deletion, you will no longer be able to use this translation prompt, and it cannot be recovered.",
+          "confirm": "About to delete:"
+        }
       }
     }
   }

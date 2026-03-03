@@ -1,6 +1,13 @@
 {
   "common": {
     "test": "这是一条测试字符串。",
+    "button": {
+      "create": "创建",
+      "save": "保存",
+      "cancel": "取消",
+      "delete": "删除",
+      "deleting": "删除中..."
+    },
     "settings": {
       "theme": {
         "select": "选择主题",
@@ -17,13 +24,58 @@
       },
       "sidebar": {
         "general": "常规",
-        "models": "模型",
+        "providers": "模型",
         "prompts": "提示词",
         "about": "关于"
       },
       "about": {
         "description": "Poixe Translate 是一个开源的翻译工具。基于 AI 大模型，支持自定义模型厂商，提供可靠的翻译服务。",
         "github": "在 GitHub 上查看源代码"
+      },
+      "providers": {
+        "header": "添加模型厂商，自定义 API 接口，支持 4 种主流协议。",
+        "add_button": "添加厂商",
+        "sheet": {
+          "name": "名称",
+          "api_style": "协议类型",
+          "model_count": "模型数量"
+        },
+        "dialog": {
+          "title_create": "添加模型厂商",
+          "title_edit": "编辑模型厂商",
+          "name": "名称",
+          "api_url": "API 端点",
+          "api_key": "API 密钥",
+          "api_style": "协议类型",
+          "select_placeholder": "选择协议类型",
+          "models": "模型列表（用逗号或换行分隔）"
+        },
+        "delete": {
+          "title": "删除模型厂商",
+          "content": "删除操作将立即生效。删除后，您将无法再使用此模型厂商配置发送请求，且无法恢复。",
+          "confirm": "即将删除："
+        }
+      },
+      "prompts": {
+        "header": "翻译时将作为系统提示词注入，用于控制术语与风格。",
+        "add_button": "添加提示词",
+        "sheet": {
+          "name": "名称",
+          "content": "内容"
+        },
+        "dialog": {
+          "title_create": "添加提示词",
+          "title_edit": "编辑提示词",
+          "name": "名称",
+          "name_placeholder": "金融",
+          "content": "提示词内容",
+          "content_placeholder": "你是一名金融领域的专业译者。要求：术语准确、语气正式；保留数字/代码/专有名词。"
+        },
+        "delete": {
+          "title": "删除翻译提示词",
+          "content": "删除操作将立即生效。删除后，您将无法再使用此翻译提示词，且无法恢复。",
+          "confirm": "即将删除："
+        }
       }
     }
   }

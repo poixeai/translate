@@ -14,12 +14,12 @@ import { Separator } from "@/components/ui/separator";
 import GeneralPanel from "./panels/GeneralPanel";
 import { useTranslation } from "react-i18next";
 import AboutPanel from "./panels/AboutPanel";
-import ModelPanel from "./panels/ModelPanel";
 import PromptPanel from "./panels/PromptPanel";
+import ProviderPanel from "./panels/ProviderPanel";
 
 const SIDEBAR = [
     { key: "general", icon: Settings, labelKey: "common.settings.sidebar.general" },
-    { key: "models", icon: Box, labelKey: "common.settings.sidebar.models" },
+    { key: "providers", icon: Box, labelKey: "common.settings.sidebar.providers" },
     { key: "prompts", icon: BookOpenText, labelKey: "common.settings.sidebar.prompts" },
     { key: "about", icon: Info, labelKey: "common.settings.sidebar.about" },
 ] as const;
@@ -51,7 +51,7 @@ export function SettingsDialog() {
                     {/* 正式内容 */}
                     <div className="flex flex-col sm:flex-row w-full h-full min-h-0 min-w-0 overflow-hidden">
                         {/* 侧边栏 */}
-                        <div className="w-full sm:w-45 bg-[#f9f9f9] dark:bg-[#1e1e1e] sm:p-1 sm:rounded-l-lg rounded-t-lg sm:rounded-t-none">
+                        <div className="shrink-0 w-full sm:w-45 bg-[#f9f9f9] dark:bg-[#1e1e1e] sm:p-1 sm:rounded-l-lg rounded-t-lg sm:rounded-t-none">
                             {/* 侧边栏 顶部关闭按钮 */}
                             <div className="h-10 flex items-center justify-end sm:justify-start dark:bg-[#212121] sm:dark:bg-[#1e1e1e]">
                                 <DialogClose asChild>
@@ -80,7 +80,7 @@ export function SettingsDialog() {
                         </div>
 
                         {/* 内容区 */}
-                        <div className="flex-1 py-1 px-2 flex flex-col min-h-0 dark:bg-[#212121]">
+                        <div className="flex-1 py-1 px-2 flex flex-col min-h-0 min-w-0 dark:bg-[#212121]">
                             {/* 内容区 顶部标题 */}
                             <div className="h-10 hidden sm:flex items-center my-2">
                                 {t(SIDEBAR.find(s => s.key === panel)?.labelKey || "")}
@@ -92,7 +92,7 @@ export function SettingsDialog() {
                             <div className="flex-1 overflow-y-auto min-h-0 text-sm">
                                 {panel === "general" && <GeneralPanel />}
 
-                                {panel === "models" && <ModelPanel />}
+                                {panel === "providers" && <ProviderPanel />}
 
                                 {panel === "prompts" && <PromptPanel />}
 
