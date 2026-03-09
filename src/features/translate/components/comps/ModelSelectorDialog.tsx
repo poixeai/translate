@@ -11,9 +11,20 @@ import { useEffect, useMemo, useState } from "react";
 import { OpenAI } from '@lobehub/icons';
 import { useProviders } from "@/hooks/useProviders";
 import { usePinnedModels } from "@/stores/pinned.models.store";
+import { usePreferences } from "@/stores/preferences.store";
 
 export default function ModelSelectorDialog() {
     const [open, setOpen] = useState(false);
+    const [keyword, setKeyword] = useState("");
+    const { selectedModel, setSelectedModel } = usePreferences();
+
+    const isSelectedModel = (providerId: number | undefined, model: string) => {
+        if (providerId == null || !selectedModel) return false;
+        return (
+            selectedModel.providerId === providerId &&
+            selectedModel.model === model
+        );
+    };
 
     const { providers } = useProviders();
     // providers -> groups
@@ -73,8 +84,21 @@ export default function ModelSelectorDialog() {
             .filter(Boolean) as Array<{ providerId: number; providerName: string; model: string }>;
     }, [groups, pinned])
 
+    // 搜索过滤置顶列表
+    const filteredPinnedItems = useMemo(() => {
+        const q = keyword.trim().toLowerCase();
+        if (!q) return pinnedItems;
+
+        return pinnedItems.filter((item) => {
+            return (
+                item.model.toLowerCase().includes(q) ||
+                item.providerName.toLowerCase().includes(q)
+            );
+        });
+    }, [pinnedItems, keyword]);
+
     // 用于“原分组区”的展示：把已置顶的模型隐藏掉
-    const visibleGroup = useMemo(() => {
+    const visibleGroups = useMemo(() => {
         return groups
             .map((g) => {
                 const pid = g.provider.id;
@@ -90,6 +114,34 @@ export default function ModelSelectorDialog() {
             .filter((g) => g.models.length > 0);
     }, [groups, pinned])
 
+    // 搜索过滤原分组区
+    const filteredGroups = useMemo(() => {
+        const q = keyword.trim().toLowerCase();
+        if (!q) return visibleGroups;
+
+        return visibleGroups
+            .map((g) => {
+                const models = g.models.filter((model) => {
+                    return (
+                        model.toLowerCase().includes(q) ||
+                        g.provider.name.toLowerCase().includes(q)
+                    );
+                });
+
+                return { ...g, models };
+            })
+            .filter((g) => g.models.length > 0);
+    }, [visibleGroups, keyword]);
+
+    const selectedModelLabel = useMemo(() => {
+        if (!selectedModel) return "选择模型";
+
+        const provider = providers?.find((p) => p.id === selectedModel.providerId);
+        if (!provider) return selectedModel.model;
+
+        return `${selectedModel.model} | ${provider.name}`;
+    }, [selectedModel, providers])
+
     return (
 
         <>
@@ -101,7 +153,7 @@ export default function ModelSelectorDialog() {
                             open && "bg-[#ececec] dark:bg-[#424242]"
                         )}
                     >
-                        选择模型
+                        <span>{selectedModelLabel}</span>
                         {open ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </button>
                 </DialogTrigger>
@@ -122,27 +174,42 @@ export default function ModelSelectorDialog() {
                             <input
                                 placeholder="搜索模型..."
                                 className="flex-1 border-0 outline-none text-sm"
+                                value={keyword}
+                                onChange={(e) => setKeyword(e.target.value)}
                             />
                         </div>
 
                         {/* 模型列表 */}
                         <div className="flex-1 px-2 py-2 pr-3 overflow-y-auto flex flex-col gap-4">
                             {/* 置顶分组 */}
-                            {pinnedItems.length > 0 && (
+                            {filteredPinnedItems.length > 0 && (
                                 <div className="flex flex-col gap-2">
                                     <div className="text-muted-foreground px-1 text-xs">
                                         置顶
                                     </div>
 
                                     <div className="flex flex-col gap-2">
-                                        {pinnedItems.map((item) => {
+                                        {filteredPinnedItems.map((item) => {
                                             const key = `${item.providerId}:${item.model}`;
+                                            const selectedNow = 
+                                                selectedModel?.providerId === item.providerId &&
+                                                selectedModel?.model === item.model;
+                                            
                                             return (
                                                 <div
                                                     key={key}
-                                                    className="relative flex flex-row justify-between items-center rounded-md text-sm
-                                                        before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-0.75 before:rounded-full before:bg-gray-300
-                                                        hover:bg-[#ececec] hover:cursor-pointer"
+                                                    onClick={() => {
+                                                        setSelectedModel({
+                                                            providerId: item.providerId,
+                                                            model: item.model,
+                                                        });
+                                                        setOpen(false);
+                                                    }}
+                                                    className={cn(
+                                                        "relative flex flex-row justify-between items-center rounded-md text-sm",
+                                                        "hover:bg-[#ececec] hover:cursor-pointer",
+                                                        selectedNow && "before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-0.75 before:rounded-full before:bg-gray-300"
+                                                    )}
                                                 >
                                                     {/* 左侧 */}
                                                     <div className="pl-1 flex flex-row items-center gap-2 mx-2 py-2" >
@@ -170,7 +237,7 @@ export default function ModelSelectorDialog() {
                             )}
 
                             {/* map 分组 */}
-                            {visibleGroup.map(({ provider, models }) => (
+                            {filteredGroups.map(({ provider, models }) => (
                                 <div
                                     key={provider.id}
                                     className="flex flex-col gap-2"
@@ -182,43 +249,52 @@ export default function ModelSelectorDialog() {
 
                                     {/* 分组内模型列表 */}
                                     <div className="flex flex-col gap-2">
-                                        {models.map((model) => (
-                                            <div
-                                                key={`${provider.id ?? provider.name}:${model}`}
-                                                className="relative flex flex-row justify-between items-center rounded-md text-sm
-                                                    before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-0.75 before:rounded-full before:bg-gray-300
-                                                    hover:bg-[#ececec] hover:cursor-pointer"
-                                            >
-                                                {/* 左侧 */}
-                                                <div className="pl-1 flex flex-row items-center gap-2 mx-2 py-2" >
-                                                    <OpenAI className="w-4 h-4" />
-                                                    <span>{model}</span>
-                                                    <span className="text-muted-foreground">{provider.name}</span>
+                                        {models.map((model) => {
+                                            const pid = provider.id;
+                                            const key = pid == null ? "" : `${pid}:${model}`;
+                                            const pinnedNow = pid != null && isPinned(key);
+                                            const selectedNow = isSelectedModel(pid, model);
+
+                                            const Icon = pinnedNow ? PinOff : Pin;
+
+                                            return (
+                                                <div
+                                                    key={`${provider.id ?? provider.name}:${model}`}
+                                                    onClick={() => {
+                                                        if (pid == null) return;
+                                                        setSelectedModel({
+                                                            providerId: pid,
+                                                            model,
+                                                        });
+                                                        setOpen(false);
+                                                    }}
+                                                    className={cn(
+                                                        "relative flex flex-row justify-between items-center rounded-md text-sm",
+                                                        "hover:bg-[#ececec] hover:cursor-pointer",
+                                                        selectedNow && "before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-0.75 before:rounded-full before:bg-gray-300"
+                                                    )}
+                                                >
+                                                    {/* 左侧 */}
+                                                    <div className="pl-1 flex flex-row items-center gap-2 mx-2 py-2" >
+                                                        <OpenAI className="w-4 h-4" />
+                                                        <span>{model}</span>
+                                                        <span className="text-muted-foreground">{provider.name}</span>
+                                                    </div>
+
+                                                    {/* 右侧 */}
+                                                    <div className="flex items-center justify-center mr-2">
+                                                        <Icon
+                                                            className="w-4 h-4 hover:cursor-pointer text-muted-foreground hover:text-foreground"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (pid == null) return;
+                                                                toggle(key);
+                                                            }}
+                                                        />
+                                                    </div>
                                                 </div>
-
-                                                {/* 右侧 */}
-                                                <div className="flex items-center justify-center mr-2">
-                                                    {(() => {
-                                                        const pid = provider.id;
-                                                        const key = pid == null ? "" : `${pid}:${model}`;
-                                                        const pinnedNow = pid != null && isPinned(key);
-
-                                                        const Icon = pinnedNow ? PinOff : Pin;
-
-                                                        return (
-                                                            <Icon
-                                                                className="w-4 h-4 hover:cursor-pointer text-muted-foreground hover:text-foreground"
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    if (pid == null) return;
-                                                                    toggle(key);
-                                                                }}
-                                                            />
-                                                        )
-                                                    })()}
-                                                </div>
-                                            </div>
-                                        ))}
+                                            )
+                                        })}
                                     </div>
                                 </div>
                             ))}
