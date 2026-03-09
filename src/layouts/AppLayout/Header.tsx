@@ -1,7 +1,6 @@
 import GithubLink from "@/components/common/GithubLink";
 import { Link } from "react-router-dom";
 import VerticalDivider from "@/components/common/VerticalDivider";
-import DemoSettingsDialog from "@/components/common/DemoSettingsDialog";
 import { SettingsDialog } from "@/features/settings";
 
 export default function Header() {
@@ -20,7 +19,6 @@ export default function Header() {
           <VerticalDivider />
 
           <SettingsDialog />
-          <DemoSettingsDialog />
         </div>
       </nav>
     </div>

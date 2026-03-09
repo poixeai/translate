@@ -11,7 +11,8 @@ export function useProviders() {
     const providers = useLiveQuery(
         async () => {
             return db.model_providers.orderBy("updated_at").reverse().toArray();
-        }, [], [] as ModelProvider[]
+        }, 
+        []
     );
 
     // 添加数据

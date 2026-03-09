@@ -11,7 +11,8 @@ export function usePrompts() {
     const prompts = useLiveQuery(
         async () => {
             return db.translation_prompts.orderBy("updated_at").reverse().toArray();
-        }, [], [] as TranslationPrompt[]
+        },
+        []
     )
 
     // 添加数据
