@@ -12,19 +12,13 @@ import { OpenAI } from '@lobehub/icons';
 import { useProviders } from "@/hooks/useProviders";
 import { usePinnedModels } from "@/stores/pinned.models.store";
 import { usePreferences } from "@/stores/preferences.store";
+import { useTranslation } from "react-i18next";
 
 export default function ModelSelectorDialog() {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const [keyword, setKeyword] = useState("");
     const { selectedModel, setSelectedModel } = usePreferences();
-
-    const isSelectedModel = (providerId: number | undefined, model: string) => {
-        if (providerId == null || !selectedModel) return false;
-        return (
-            selectedModel.providerId === providerId &&
-            selectedModel.model === model
-        );
-    };
 
     const { providers } = useProviders();
     // providers -> groups
@@ -134,13 +128,68 @@ export default function ModelSelectorDialog() {
     }, [visibleGroups, keyword]);
 
     const selectedModelLabel = useMemo(() => {
-        if (!selectedModel) return "选择模型";
+        if (!selectedModel) return t("common.preferences.select_model.dialog_trigger");
 
         const provider = providers?.find((p) => p.id === selectedModel.providerId);
         if (!provider) return selectedModel.model;
 
         return `${selectedModel.model} | ${provider.name}`;
     }, [selectedModel, providers])
+
+    const renderModelItem = ({
+        providerId,
+        providerName,
+        model,
+    }: {
+        providerId: number;
+        providerName: string;
+        model: string;
+    }) => {
+        const key = `${providerId}:${model}`;
+        const selectedNow =
+            selectedModel?.providerId === providerId &&
+            selectedModel?.model === model;
+
+        const pinnedNow = isPinned(key);
+        const Icon = pinnedNow ? PinOff : Pin;
+
+        return (
+            <div
+                key={key}
+                onClick={() => {
+                    setSelectedModel({
+                        providerId,
+                        model,
+                    });
+                    setOpen(false);
+                }}
+                className={cn(
+                    "relative flex flex-row justify-between items-center rounded-md text-sm",
+                    "hover:bg-[#ececec] hover:cursor-pointer dark:hover:bg-[#353535]",
+                    selectedNow &&
+                    "bg-[#ececec] dark:bg-[#353535] before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-0.75 before:rounded-full before:bg-gray-300"
+                )}
+            >
+                {/* 左侧 */}
+                <div className="pl-1 flex flex-row items-center gap-2 mx-2 py-2 min-w-0">
+                    <OpenAI className="w-4 h-4 shrink-0" />
+                    <span className="truncate">{model}</span>
+                    <span className="text-muted-foreground truncate">{providerName}</span>
+                </div>
+
+                {/* 右侧 */}
+                <div className="flex items-center justify-center mr-2 shrink-0">
+                    <Icon
+                        className="w-4 h-4 hover:cursor-pointer text-muted-foreground hover:text-foreground"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            toggle(key);
+                        }}
+                    />
+                </div>
+            </div>
+        );
+    };
 
     return (
 
@@ -150,21 +199,24 @@ export default function ModelSelectorDialog() {
                     <button
                         className={cn(
                             "text-sm flex items-center gap-3 border px-3 py-1 w-fit rounded-lg hover:cursor-pointer hover:bg-[#ececec] dark:bg-[#2f2f2f] dark:hover:bg-[#424242] text-muted-foreground border-none",
+                            "max-w-80 min-w-0",
                             open && "bg-[#ececec] dark:bg-[#424242]"
                         )}
                     >
-                        <span>{selectedModelLabel}</span>
+                        <span className="flex-1 min-w-0 truncate text-left">
+                            {selectedModelLabel}
+                        </span>
                         {open ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </button>
                 </DialogTrigger>
 
                 <DialogContent
                     showCloseButton={false}
-                    className="w-[90vw] h-[80vh] sm:max-w-120 sm:max-h-140 p-0"
+                    className="w-[90vw] h-[80vh] sm:max-w-120 sm:max-h-140 p-0 dark:bg-[#212121]"
                 >
                     {/* 无障碍标准 */}
-                    <DialogTitle className="sr-only">选择模型</DialogTitle>
-                    <DialogDescription className="sr-only">选择用于翻译的 AI 模型</DialogDescription>
+                    <DialogTitle className="sr-only">{t("common.preferences.select_model.dialog_title")}</DialogTitle>
+                    <DialogDescription className="sr-only">{t("common.preferences.select_model.dialog_description")}</DialogDescription>
 
                     {/* 正式内容 */}
                     <div className="flex flex-col py-2 min-h-0 overflow-hidden">
@@ -172,7 +224,7 @@ export default function ModelSelectorDialog() {
                         <div className="border-b px-4 pt-2 pb-3 flex flex-row items-center gap-2">
                             <SearchIcon className="w-5 h-5 text-muted-foreground" />
                             <input
-                                placeholder="搜索模型..."
+                                placeholder={t("common.preferences.select_model.search")}
                                 className="flex-1 border-0 outline-none text-sm"
                                 value={keyword}
                                 onChange={(e) => setKeyword(e.target.value)}
@@ -185,53 +237,17 @@ export default function ModelSelectorDialog() {
                             {filteredPinnedItems.length > 0 && (
                                 <div className="flex flex-col gap-2">
                                     <div className="text-muted-foreground px-1 text-xs">
-                                        置顶
+                                        {t("common.preferences.select_model.pinned")}
                                     </div>
 
                                     <div className="flex flex-col gap-2">
-                                        {filteredPinnedItems.map((item) => {
-                                            const key = `${item.providerId}:${item.model}`;
-                                            const selectedNow = 
-                                                selectedModel?.providerId === item.providerId &&
-                                                selectedModel?.model === item.model;
-                                            
-                                            return (
-                                                <div
-                                                    key={key}
-                                                    onClick={() => {
-                                                        setSelectedModel({
-                                                            providerId: item.providerId,
-                                                            model: item.model,
-                                                        });
-                                                        setOpen(false);
-                                                    }}
-                                                    className={cn(
-                                                        "relative flex flex-row justify-between items-center rounded-md text-sm",
-                                                        "hover:bg-[#ececec] hover:cursor-pointer",
-                                                        selectedNow && "before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-0.75 before:rounded-full before:bg-gray-300"
-                                                    )}
-                                                >
-                                                    {/* 左侧 */}
-                                                    <div className="pl-1 flex flex-row items-center gap-2 mx-2 py-2" >
-                                                        <OpenAI className="w-4 h-4" />
-                                                        <span>{item.model}</span>
-                                                        <span className="text-muted-foreground">{item.providerName}</span>
-                                                    </div>
-
-                                                    {/* 右侧 */}
-                                                    <div className="flex items-center justify-center mr-2">
-                                                        {/* 置顶里点一下就是取消置顶 */}
-                                                        <PinOff
-                                                            className="w-4 h-4 hover:cursor-pointer text-muted-foreground hover:text-foreground"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                toggle(key);
-                                                            }}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            )
-                                        })}
+                                        {filteredPinnedItems.map((item) =>
+                                            renderModelItem({
+                                                providerId: item.providerId,
+                                                providerName: item.providerName,
+                                                model: item.model,
+                                            })
+                                        )}
                                     </div>
                                 </div>
                             )}
@@ -251,49 +267,13 @@ export default function ModelSelectorDialog() {
                                     <div className="flex flex-col gap-2">
                                         {models.map((model) => {
                                             const pid = provider.id;
-                                            const key = pid == null ? "" : `${pid}:${model}`;
-                                            const pinnedNow = pid != null && isPinned(key);
-                                            const selectedNow = isSelectedModel(pid, model);
+                                            if (pid == null) return null;
 
-                                            const Icon = pinnedNow ? PinOff : Pin;
-
-                                            return (
-                                                <div
-                                                    key={`${provider.id ?? provider.name}:${model}`}
-                                                    onClick={() => {
-                                                        if (pid == null) return;
-                                                        setSelectedModel({
-                                                            providerId: pid,
-                                                            model,
-                                                        });
-                                                        setOpen(false);
-                                                    }}
-                                                    className={cn(
-                                                        "relative flex flex-row justify-between items-center rounded-md text-sm",
-                                                        "hover:bg-[#ececec] hover:cursor-pointer",
-                                                        selectedNow && "before:content-[''] before:absolute before:left-0 before:top-1 before:bottom-1 before:w-0.75 before:rounded-full before:bg-gray-300"
-                                                    )}
-                                                >
-                                                    {/* 左侧 */}
-                                                    <div className="pl-1 flex flex-row items-center gap-2 mx-2 py-2" >
-                                                        <OpenAI className="w-4 h-4" />
-                                                        <span>{model}</span>
-                                                        <span className="text-muted-foreground">{provider.name}</span>
-                                                    </div>
-
-                                                    {/* 右侧 */}
-                                                    <div className="flex items-center justify-center mr-2">
-                                                        <Icon
-                                                            className="w-4 h-4 hover:cursor-pointer text-muted-foreground hover:text-foreground"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                if (pid == null) return;
-                                                                toggle(key);
-                                                            }}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            )
+                                            return renderModelItem({
+                                                providerId: pid,
+                                                providerName: provider.name,
+                                                model,
+                                            });
                                         })}
                                     </div>
                                 </div>

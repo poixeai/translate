@@ -1,4 +1,10 @@
 {
+  "languages": {
+    "en": "English",
+    "zh-CN": "Chinese (Simplified)",
+    "zh-TW": "Chinese (Traditional)",
+    "ja": "Japanese"
+  },
   "common": {
     "test": "This is a test string.",
     "button": {
@@ -75,6 +81,40 @@
           "title": "Delete Translation Prompt",
           "content": "This action takes effect immediately. After deletion, you will no longer be able to use this translation prompt, and it cannot be recovered.",
           "confirm": "About to delete:"
+        }
+      }
+    },
+    "preferences": {
+      "select_model": {
+        "pinned": "Pinned",
+        "search": "Search models...",
+        "dialog_trigger": "Select Model",
+        "dialog_title": "Select Model",
+        "dialog_description": "Select an AI model to use for translation"
+      },
+      "select_language": {
+        "search": "Search languages...",
+        "dialog_trigger": "Select Language",
+        "dialog_title": "Select Language",
+        "dialog_description": "Select the target language for translation"
+      },
+      "select_prompt": {
+        "search": "Search prompts...",
+        "dialog_trigger": "Select Prompt",
+        "dialog_title": "Select Prompt",
+        "dialog_description": "Select the prompt used for translation"
+      }
+    },
+    "frame": {
+      "input": {
+        "auto_detect": "Auto Detect",
+        "translate": "Translate",
+        "placeholder": "Type to translate."
+      },
+      "footer": {
+        "shortcuts": {
+          "translate": "Translate",
+          "clear": "Clear"
         }
       }
     }
