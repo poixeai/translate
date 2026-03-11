@@ -28,18 +28,27 @@ export default function LanguageSelectorDialog() {
             .sort((a, b) => a.label.localeCompare(b.label));
     }, [t]);
 
+    function normalizeSearchText(text: string) {
+        return text.trim().toLowerCase().replace(/\s+/g, " ");
+    }
+
     // 搜索过滤
     const filtered = useMemo(() => {
-        const q = keyword.trim().toLowerCase();
+        const q = normalizeSearchText(keyword);
         if (!q) return sortedLanguages;
+
         return sortedLanguages.filter((lang) => {
-            // 1. 当前 UI 语言下的显示名
-            if (lang.label.toLowerCase().includes(q)) return true;
-            // 2. 语言代码
-            if (lang.code.toLowerCase().includes(q)) return true;
-            // 3. 所有搜索关键词（跨语言）
-            if (lang.searchTerms.some((term) => term.toLowerCase().includes(q))) return true;
-            return false;
+            const searchPool = [
+                lang.label,
+                lang.code,
+                lang.nativeName,
+                lang.promptName,
+                ...lang.searchTerms,
+            ];
+
+            return searchPool.some((text) =>
+                normalizeSearchText(text).includes(q)
+            );
         });
     }, [sortedLanguages, keyword]);
 

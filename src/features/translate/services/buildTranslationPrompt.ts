@@ -1,3 +1,8 @@
+import { LANGUAGES } from "@/constants/languages";
+
+export function getPromptLanguageName(code: string) {
+    return LANGUAGES.find((lang) => lang.code === code)?.promptName ?? code;
+}
 
 export function buildTranslationPrompt({
     promptContent,
@@ -6,5 +11,7 @@ export function buildTranslationPrompt({
     promptContent: string;
     targetLanguage: string;
 }) {
-    return `${promptContent}\n请将上面的文本翻译成${targetLanguage}。`;
+    const targetLanguageName = getPromptLanguageName(targetLanguage);
+
+    return `${promptContent}\nPlease translate the user's input into ${targetLanguageName}.`;
 }

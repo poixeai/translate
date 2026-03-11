@@ -37,12 +37,34 @@ export function Translator() {
 
         if (!inputEl || !outputEl) return;
 
+        const isMobile = window.innerWidth < 768;
         const minHeight = 300;
         const bottomGap = 100;
 
         // 先都设成 auto，拿到真实 scrollHeight
         inputEl.style.height = "auto";
         outputEl.style.height = "auto";
+
+        if (isMobile) {
+            const mobileMaxHeight = Math.max(220, window.innerHeight * 0.35);
+
+            const inputHeight = Math.min(
+                Math.max(inputEl.scrollHeight, minHeight),
+                mobileMaxHeight
+            );
+
+            const outputHeight = Math.min(
+                Math.max(outputEl.scrollHeight, minHeight),
+                mobileMaxHeight
+            );
+
+            inputEl.style.height = `${inputHeight}px`;
+            outputEl.style.height = `${outputHeight}px`;
+
+            inputEl.style.overflowY = inputEl.scrollHeight > inputHeight ? "auto" : "hidden";
+            outputEl.style.overflowY = outputEl.scrollHeight > outputHeight ? "auto" : "hidden";
+            return;
+        }
 
         // 用左侧 textarea 的 top 来算可用高度就够了
         // 因为你左右结构基本是对齐的
@@ -177,9 +199,9 @@ export function Translator() {
 
     return (
         <>
-            <div className="border grid grid-cols-2 rounded-md bg-[#FBFBFB] dark:bg-[#0B0B0C]">
+            <div className="border grid grid-cols-1 sm:grid-cols-2 rounded-md bg-[#FBFBFB] dark:bg-[#0B0B0C]">
                 {/* 左侧输入 */}
-                <div className="border-r flex flex-col">
+                <div className="border-r-0 sm:border-r border-b sm:border-0 flex flex-col min-w-0">
                     {/* left header */}
                     <div className="border-b px-4 py-2 flex justify-between items-center">
                         <div className="text-muted-foreground text-sm">{t("common.frame.input.auto_detect")}</div>
@@ -221,7 +243,7 @@ export function Translator() {
                 </div>
 
                 {/* 右侧输出 */}
-                <div className="flex flex-col relative">
+                <div className="flex flex-col relative min-w-0">
                     <div className="border-b px-4 py-2 flex justify-between items-center">
                         <LanguageSelectorDialog />
 
@@ -250,7 +272,7 @@ export function Translator() {
                             <Alert variant="destructive">
                                 <AlertCircleIcon />
                                 <AlertTitle>{t("common.error.translate_failed")}</AlertTitle>
-                                <AlertDescription>
+                                <AlertDescription className="min-w-0 wrap-break-words whitespace-pre-wrap break-all">
                                     {translateError.code
                                         ? t(`common.error.${translateError.code}`)
                                         : translateError.message}

@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto flex flex-row justify-between items-center px-2">
         <span className="text-xs">© {new Date().getFullYear()} Poixe Translate</span>
 
-        <div className="flex items-center gap-5 text-xs">
+        <div className="hidden sm:flex items-center gap-5 text-xs">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
               <Kbd>⌘</Kbd>

@@ -10,6 +10,19 @@ import { useTranslation } from "react-i18next";
 const LANGUAGES = [
     { code: "en", label: "English", short: "EN" },
     { code: "zh-CN", label: "简体中文", short: "CN" },
+    { code: "zh-TW", label: "繁體中文", short: "TW" },
+    { code: "ja", label: "日本語", short: "JA" },
+    { code: "ko", label: "한국어", short: "KO" },
+    { code: "ru", label: "Русский", short: "RU" },
+    { code: "fr", label: "Français", short: "FR" },
+    { code: "de", label: "Deutsch", short: "DE" },
+    { code: "es", label: "Español", short: "ES" },
+    { code: "pt", label: "Português", short: "PT" },
+    { code: "it", label: "Italiano", short: "IT" },
+    { code: "nl", label: "Nederlands", short: "NL" },
+    { code: "ar", label: "العربية", short: "AR" },
+    { code: "hi", label: "हिन्दी", short: "HI" },
+    { code: "id", label: "Bahasa Indonesia", short: "ID" },
 ];
 
 export default function LanguageSelector() {
