@@ -8,12 +8,14 @@ import { useTranslate } from '../hooks/useTranslate';
 import { Spinner } from "@/components/ui/spinner"
 import { Square } from 'lucide-react';
 import { SpinnerOld } from '@/components/ui/spinner-old';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircleIcon } from "lucide-react";
 
 export function Translator() {
     const { t } = useTranslation();
 
     const { sourceText, setSourceText, translatedText, setTranslatedText } = usePreferences();
-    const { handleTranslate, isTranslating, stopTranslate } = useTranslate();
+    const { handleTranslate, isTranslating, stopTranslate, translateError, setTranslateError } = useTranslate();
 
     const inputTextareaRef = useRef<HTMLTextAreaElement | null>(null);
     const outputTextareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -64,6 +66,9 @@ export function Translator() {
     };
 
     const handleTranslateWithReset = async () => {
+        if (!sourceText.trim()) return;
+
+        setTranslateError(null);
         shouldAutoScrollOutputRef.current = true;
 
         const outputEl = outputTextareaRef.current;
@@ -162,6 +167,7 @@ export function Translator() {
                 setSourceText("");
                 setTranslatedText("");
                 lastEscTimeRef.current = 0;
+                setTranslateError(null);
                 return;
             }
 
@@ -235,6 +241,21 @@ export function Translator() {
                     {isTranslating && !translatedText && (
                         <div className="absolute inset-0 flex items-center justify-center">
                             <SpinnerOld className="size-5" />
+                        </div>
+                    )}
+
+                    {/* 有 code 优先走 i18n，没有 code 才展示上游 message/body */}
+                    {translateError && (
+                        <div className="absolute inset-x-4 top-16 z-10">
+                            <Alert variant="destructive">
+                                <AlertCircleIcon />
+                                <AlertTitle>{t("common.error.translate_failed")}</AlertTitle>
+                                <AlertDescription>
+                                    {translateError.code
+                                        ? t(`common.error.${translateError.code}`)
+                                        : translateError.message}
+                                </AlertDescription>
+                            </Alert>
                         </div>
                     )}
                 </div>

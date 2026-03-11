@@ -120,6 +120,18 @@
           "clear": "Clear"
         }
       }
+    },
+    "error": {
+      "translate_failed": "Translation failed",
+      "status_code": "Status code",
+      "response_body": "Response body",
+      "source_text_empty": "Please enter text to translate",
+      "model_required": "Please select a model",
+      "target_language_required": "Please select a target language",
+      "prompt_required": "Please select a prompt",
+      "provider_not_found": "The selected provider was not found",
+      "prompt_not_found": "The selected prompt was not found",
+      "unsupported_api_style": "This provider API style is not supported"
     }
   }
 }

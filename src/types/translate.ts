@@ -14,3 +14,10 @@ export type TranslateExecuteParams = {
 };
 
 export type ProviderTranslateFn = (params: TranslateExecuteParams) => Promise<void>;
+
+export type TranslateError = {
+    code?: string;
+    message?: string;
+    status?: number;
+    body?: string;
+};

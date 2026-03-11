@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { usePreferences } from "@/stores/preferences.store";
 import { providerTranslators } from "../providers";
 import { buildTranslationPrompt } from "./buildTranslationPrompt";
+import { TranslateKnownError } from "./translateError";
 
 export async function runTranslate(signal?: AbortSignal) {
     const {
@@ -13,29 +14,29 @@ export async function runTranslate(signal?: AbortSignal) {
     } = usePreferences.getState();
 
     if (!sourceText.trim()) {
-        throw new Error("Source text is empty");
-    }
-
-    if (!targetLanguage) {
-        throw new Error("Target language is required");
+        throw new TranslateKnownError("source_text_empty");
     }
 
     if (!selectedModel) {
-        throw new Error("Model is required");
+        throw new TranslateKnownError("model_required");
+    }
+
+    if (!targetLanguage) {
+        throw new TranslateKnownError("target_language_required");
     }
 
     if (selectedPromptId == null) {
-        throw new Error("Prompt is required");
+        throw new TranslateKnownError("prompt_required");
     }
 
     const provider = await db.model_providers.get(selectedModel.providerId);
     if (!provider) {
-        throw new Error("Provider not found");
+        throw new TranslateKnownError("provider_not_found");
     }
 
     const prompt = await db.translation_prompts.get(selectedPromptId);
     if (!prompt) {
-        throw new Error("Prompt not found");
+        throw new TranslateKnownError("prompt_not_found");
     }
 
     const finalPrompt = buildTranslationPrompt({
@@ -49,7 +50,7 @@ export async function runTranslate(signal?: AbortSignal) {
         providerTranslators[provider.api_style as keyof typeof providerTranslators];
 
     if (!translator) {
-        throw new Error(`Unsupported api style: ${provider.api_style}`);
+        throw new TranslateKnownError("unsupported_api_style");
     }
 
     await translator({

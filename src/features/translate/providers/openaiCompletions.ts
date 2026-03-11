@@ -9,31 +9,55 @@ export const streamWithOpenAICompletions: ProviderTranslateFn = async ({
     onDelta,
     signal,
 }) => {
-    const client = new OpenAI({
-        apiKey: provider.api_key,
-        baseURL: `${provider.base_url}/v1`,
-        dangerouslyAllowBrowser: true, // 如果在浏览器端调用需要这个
-        timeout: 60 * 1000, // 60 秒
-    });
+    try {
+        const client = new OpenAI({
+            apiKey: provider.api_key,
+            baseURL: `${provider.base_url}/v1`,
+            dangerouslyAllowBrowser: true,
+            timeout: 60 * 1000, // 60 秒
+        });
 
-    const stream = await client.chat.completions.create(
-        {
-            model,
-            stream: true,
-            messages: [
-                { role: "system", content: promptContent },
-                { role: "user", content: sourceText },
-            ],
-        },
-        {
-            signal,
-        }
-    );
+        const stream = await client.chat.completions.create(
+            {
+                model,
+                stream: true,
+                messages: [
+                    { role: "system", content: promptContent },
+                    { role: "user", content: sourceText },
+                ],
+            },
+            {
+                signal,
+            }
+        );
 
-    for await (const chunk of stream) {
-        const content = chunk.choices[0]?.delta?.content;
-        if (content) {
-            onDelta(content);
+        for await (const chunk of stream) {
+            const content = chunk.choices[0]?.delta?.content;
+            if (content) {
+                onDelta(content);
+            }
         }
+    } catch (error: unknown) {
+        if (error instanceof DOMException && error.name === "AbortError") {
+            throw error;
+        }
+
+        if (error instanceof OpenAI.APIError) {
+            throw {
+                message: error.message,
+                status: error.status,
+                body: error.error ? JSON.stringify(error.error, null, 2) : undefined,
+            };
+        }
+
+        if (error instanceof Error) {
+            throw {
+                message: error.message,
+            };
+        }
+
+       throw {
+            message: "OpenAI request failed",
+        };
     }
 };
