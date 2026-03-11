@@ -104,7 +104,7 @@ export default function PromptSelectorDialog() {
                                             )}
                                         >
                                             <div className={cn("flex flex-col gap-1 min-w-0", selected && "pl-1")}>
-                                                <div className="text-sm font-medium truncate wrap-break-words">
+                                                <div className="text-sm font-medium truncate wrap-break-words max-w-50">
                                                     {item.name}
                                                 </div>
 

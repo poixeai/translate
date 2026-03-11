@@ -2,14 +2,15 @@ import { useTranslation } from 'react-i18next';
 import ModelSelectorDialog from './comps/ModelSelectorDialog';
 import { usePreferences } from '@/stores/preferences.store';
 import { useEffect, useRef } from 'react';
-import { Share2 } from 'lucide-react';
 import LanguageSelectorDialog from './comps/LanguageSelectorDialog';
 import PromptSelectorDialog from './comps/PromptSelectorDialog';
+import { useTranslate } from '../hooks/useTranslate';
 
 export function Translator() {
     const { t } = useTranslation();
 
     const { sourceText, setSourceText, translatedText, setTranslatedText } = usePreferences();
+    const { handleTranslate, isTranslating } = useTranslate();
 
     const inputTextareaRef = useRef<HTMLTextAreaElement | null>(null);
     const outputTextareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -66,12 +67,12 @@ export function Translator() {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    const handleTranslate = async () => {
-        if (!sourceText.trim()) return;
+    // const handleTranslate = async () => {
+    //     if (!sourceText.trim()) return;
 
-        const result = "这里是翻译结果\n\n\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n";
-        setTranslatedText(result);
-    };
+    //     const result = "这里是翻译结果\n\n\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n";
+    //     setTranslatedText(result);
+    // };
 
     const flashTranslateButtonPress = () => {
         const el = translateButtonRef.current;
@@ -135,11 +136,12 @@ export function Translator() {
                     ></textarea>
 
                     {/* left footer */}
-                    <div className="px-4 py-0 flex justify-end mb-2 mt-auto">
+                    <div className="px-4 py-0 flex justify-end mb-1 mt-1">
                         <button
                             ref={translateButtonRef}
                             className="apple-press text-sm flex items-center gap-1 border px-3 py-1 w-fit rounded-lg cursor-pointer hover:bg-[#ececec] dark:bg-[#2f2f2f] dark:hover:bg-[#424242] text-muted-foreground"
                             onClick={handleTranslate}
+                            disabled={isTranslating || !sourceText.trim()}
                         >
                             {t("common.frame.input.translate")}
                         </button>

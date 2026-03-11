@@ -259,7 +259,7 @@ export default function ModelSelectorDialog() {
                                     className="flex flex-col gap-2"
                                 >
                                     {/* 分组标题：provider 名称 */}
-                                    <div className="text-muted-foreground px-1 text-xs">
+                                    <div className="text-muted-foreground px-1 text-xs max-w-50 truncate">
                                         {provider.name}
                                     </div>
 

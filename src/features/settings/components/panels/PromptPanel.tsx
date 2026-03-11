@@ -76,7 +76,7 @@ export default function PromptPanel() {
                                 ) : (
                                     prompts.map((p) => (
                                         <TableRow key={p.id}>
-                                            <TableCell className="font-medium">{p.name}</TableCell>
+                                            <TableCell className="font-medium max-w-50 truncate">{p.name}</TableCell>
                                             <TableCell className="max-w-50 truncate text-muted-foreground">{p.content}</TableCell>
                                             <TableCell className="text-right">
                                                 <button

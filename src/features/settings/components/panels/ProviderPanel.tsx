@@ -79,7 +79,7 @@ export default function ProviderPanel() {
                             ) : (
                                 providers.map((p) => (
                                     <TableRow key={p.id}>
-                                        <TableCell className="font-medium">{p.name}</TableCell>
+                                        <TableCell className="font-medium max-w-50 truncate">{p.name}</TableCell>
                                         <TableCell>{getAPIStyleLabel(p.api_style)}</TableCell>
                                         <TableCell>
                                             {normalizeAndDedupeModels(p.models ?? "").count}
