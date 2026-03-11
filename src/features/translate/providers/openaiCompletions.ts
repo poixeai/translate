@@ -57,7 +57,7 @@ export const streamWithOpenAICompletions: ProviderTranslateFn = async ({
         }
 
        throw {
-            message: "OpenAI request failed",
+            message: "OpenAI Chat Completions request failed",
         };
     }
 };
