@@ -36,7 +36,7 @@ export default function ProviderUpsertDialog({
     const [apiStyle, setApiStyle] = useState<APIStyle>("openai_completions");
     const [models, setModels] = useState("");
 
-    // 打开编辑时，把数据灌进去；新增时清空
+    // When opening for editing, populate the data; clear when adding new.
     useEffect(() => {
         if (!open) return;
 
@@ -45,7 +45,7 @@ export default function ProviderUpsertDialog({
             setBaseUrl(initial.base_url ?? "");
             setApiKey(initial.api_key ?? "");
             setApiStyle(initial.api_style ?? "openai_completions");
-            setModels((initial.models ?? "").split(",").join("\n")); // 展示时换成多行更好编辑
+            setModels((initial.models ?? "").split(",").join("\n"));
         } else {
             setName("");
             setBaseUrl("");
@@ -73,7 +73,6 @@ export default function ProviderUpsertDialog({
         }
 
         if (isEdit && initial?.id) {
-            // 编辑：update 用 patch 也行，这里直接传全量字段更直观
             await onUpdate(initial.id, payload);
         } else {
             await onCreate(payload);
@@ -91,21 +90,16 @@ export default function ProviderUpsertDialog({
                 showCloseButton={false}
                 className="w-[90vw] h-[80vh] sm:max-w-120 sm:max-h-140 p-0"
             >
-                {/* 无障碍标准 */}
                 <DialogTitle className="sr-only">
                     {isEdit ? t('common.settings.providers.dialog.title_edit') : t('common.settings.providers.dialog.title_create')}
                 </DialogTitle>
 
-                {/* 正式内容 */}
                 <div className="flex flex-col gap-3 justify-between py-3 min-w-0 overflow-hidden">
-                    {/* header */}
                     <div className="text-lg px-3">
                         {isEdit ? t('common.settings.providers.dialog.title_edit') : t('common.settings.providers.dialog.title_create')}
                     </div>
 
-                    {/* sheet */}
                     <div className="flex-1 overflow-y-auto flex flex-col gap-4 px-3 py-2">
-                        {/* <PageFiller /> */}
                         <div className="grid gap-2">
                             <Label>{t('common.settings.providers.dialog.name')}</Label>
                             <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="OpenAI" />

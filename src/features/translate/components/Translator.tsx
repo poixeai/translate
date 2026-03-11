@@ -41,7 +41,7 @@ export function Translator() {
         const minHeight = 300;
         const bottomGap = 100;
 
-        // 先都设成 auto，拿到真实 scrollHeight
+        // First set everything to auto to get the actual scrollHeight.
         inputEl.style.height = "auto";
         outputEl.style.height = "auto";
 
@@ -66,8 +66,8 @@ export function Translator() {
             return;
         }
 
-        // 用左侧 textarea 的 top 来算可用高度就够了
-        // 因为你左右结构基本是对齐的
+        // Use the top of the left textarea to calculate the available height, as it's sufficient 
+        // because your left and right structures are basically aligned.
         const rect = inputEl.getBoundingClientRect();
         const availableHeight = window.innerHeight - rect.top - bottomGap;
         const dynamicMaxHeight = Math.max(minHeight, availableHeight);
@@ -200,16 +200,13 @@ export function Translator() {
     return (
         <>
             <div className="border grid grid-cols-1 sm:grid-cols-2 rounded-md bg-[#FBFBFB] dark:bg-[#0B0B0C]">
-                {/* 左侧输入 */}
                 <div className="border-r-0 sm:border-r border-b sm:border-0 flex flex-col min-w-0">
-                    {/* left header */}
                     <div className="border-b px-4 py-2 flex justify-between items-center">
                         <div className="text-muted-foreground text-sm">{t("common.frame.input.auto_detect")}</div>
 
                         <ModelSelectorDialog />
                     </div>
 
-                    {/* left body */}
                     <textarea
                         className="px-4 py-2 w-full bg-transparent border-0 outline-none focus:outline-none ring-0 focus:ring-0 shadow-none resize-none"
                         ref={inputTextareaRef}
@@ -219,7 +216,6 @@ export function Translator() {
                         placeholder={t("common.frame.input.placeholder")}
                     ></textarea>
 
-                    {/* left footer */}
                     <div className="px-4 py-0 flex justify-end my-2">
                         <button
                             ref={translateButtonRef}
@@ -242,7 +238,6 @@ export function Translator() {
                     </div>
                 </div>
 
-                {/* 右侧输出 */}
                 <div className="flex flex-col relative min-w-0">
                     <div className="border-b px-4 py-2 flex justify-between items-center">
                         <LanguageSelectorDialog />
@@ -266,7 +261,7 @@ export function Translator() {
                         </div>
                     )}
 
-                    {/* 有 code 优先走 i18n，没有 code 才展示上游 message/body */}
+                    {/* If there is a code, prioritize i18n; if not, display the upstream message/body */}
                     {translateError && (
                         <div className="absolute inset-x-4 top-16 z-10">
                             <Alert variant="destructive">

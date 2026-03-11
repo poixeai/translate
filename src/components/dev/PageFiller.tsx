@@ -1,6 +1,6 @@
 interface PageFillerProps {
-  rows?: number;        // 渲染多少行
-  prefix?: string;      // 行前缀
+  rows?: number;     
+  prefix?: string;    
   className?: string;
 }
 

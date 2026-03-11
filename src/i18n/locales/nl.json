@@ -200,7 +200,16 @@
       "stop_translating": "Stoppen",
       "stopped_hint": "Gestopt"
     },
+    "status": {
+      "loading": "Laden...",
+      "no_prompts": "Geen prompts beschikbaar.",
+      "no_providers": "Geen providers beschikbaar."
+    },
     "settings": {
+      "dialog": {
+        "dialog_title": "Instellingenpaneel",
+        "dialog_description": "Pas je applicatievoorkeuren aan"
+      },
       "theme": {
         "select": "Thema selecteren",
         "light": "Licht",

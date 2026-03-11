@@ -18,7 +18,7 @@ export default function LanguageSelectorDialog() {
     const [keyword, setKeyword] = useState("");
     const { targetLanguage, setTargetLanguage } = usePreferences();
 
-    // 把语言列表按翻译后的名称排序
+    // Sort the language list by the translated names.
     const sortedLanguages = useMemo(() => {
         return [...LANGUAGES]
             .map((lang) => ({
@@ -32,7 +32,7 @@ export default function LanguageSelectorDialog() {
         return text.trim().toLowerCase().replace(/\s+/g, " ");
     }
 
-    // 搜索过滤
+    // Search Filtering
     const filtered = useMemo(() => {
         const q = normalizeSearchText(keyword);
         if (!q) return sortedLanguages;
@@ -52,11 +52,11 @@ export default function LanguageSelectorDialog() {
         });
     }, [sortedLanguages, keyword]);
 
-    // 两列布局：拆成左右两列
+    // Two-column layout: Split into left and right columns.
     const leftCol = useMemo(() => filtered.filter((_, i) => i % 2 === 0), [filtered]);
     const rightCol = useMemo(() => filtered.filter((_, i) => i % 2 === 1), [filtered]);
 
-    // 当前选中的显示文字
+    // Currently selected display text
     const selectedLabel = useMemo(() => {
         const found = LANGUAGES.find((l) => l.code === targetLanguage);
         return found
@@ -104,13 +104,10 @@ export default function LanguageSelectorDialog() {
                     showCloseButton={false}
                     className="w-[90vw] h-[80vh] sm:max-w-120 sm:max-h-140 p-0 dark:bg-[#212121]"
                 >
-                    {/* 无障碍标准 */}
                     <DialogTitle className="sr-only">{t("common.preferences.select_language.dialog_title")}</DialogTitle>
                     <DialogDescription className="sr-only">{t("common.preferences.select_language.dialog_description")}</DialogDescription>
 
-                    {/* 正式内容 */}
                     <div className="flex flex-col py-2 min-h-0 overflow-hidden">
-                        {/* 顶部搜索 */}
                         <div className="border-b px-4 pt-2 pb-3 flex flex-row items-center gap-2">
                             <SearchIcon className="w-5 h-5 text-muted-foreground" />
                             <input
@@ -121,14 +118,12 @@ export default function LanguageSelectorDialog() {
                             />
                         </div>
 
-                        {/* 两列语言列表 */}
                         <div className="flex-1 overflow-y-auto px-2 py-2">
                             <div className="grid grid-cols-2 gap-x-2 gap-y-1">
-                                {/* 左列 */}
                                 <div className="flex flex-col gap-1">
                                     {leftCol.map(renderItem)}
                                 </div>
-                                {/* 右列 */}
+
                                 <div className="flex flex-col gap-1">
                                     {rightCol.map(renderItem)}
                                 </div>

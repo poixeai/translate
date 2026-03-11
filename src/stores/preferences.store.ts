@@ -10,14 +10,12 @@ type PrefereneceState = {
     selectedModel: SelectedModel | null;
     targetLanguage: string;
     selectedPromptId: number | null;
-    // 后续扩展：targetLanguage、promptId 等
     sourceText: string;
     translatedText: string;
 
     setSelectedModel: (value: SelectedModel | null) => void;
     setTargetLanguage: (code: string) => void;
     setSelectedPromptId: (id: number | null) => void;
-    // 后续扩展：setTargetLanguage、setPromptId 等
     setSourceText: (value: string) => void;
     setTranslatedText: (value: string) => void;
 }

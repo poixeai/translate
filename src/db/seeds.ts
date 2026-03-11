@@ -3,7 +3,7 @@ import { db } from "./index";
 import type { TranslationPrompt } from "@/types/prompts";
 
 export async function seedDbOnce() {
-    // 确保数据库打开
+    // Ensure the database is open.
     await db.open();
 
     const now = Date.now();

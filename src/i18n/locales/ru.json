@@ -200,7 +200,16 @@
       "stop_translating": "Остановить",
       "stopped_hint": "Остановлено"
     },
+    "status": {
+      "loading": "Загрузка...",
+      "no_prompts": "Нет доступных промптов.",
+      "no_providers": "Нет доступных провайдеров."
+    },
     "settings": {
+      "dialog": {
+        "dialog_title": "Панель настроек",
+        "dialog_description": "Настройте параметры приложения"
+      },
       "theme": {
         "select": "Выберите тему",
         "light": "Светлая",

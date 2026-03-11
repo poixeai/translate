@@ -200,7 +200,16 @@
       "stop_translating": "Stopp",
       "stopped_hint": "Gestoppt"
     },
+    "status": {
+      "loading": "Wird geladen...",
+      "no_prompts": "Keine Prompts verfügbar.",
+      "no_providers": "Keine Anbieter verfügbar."
+    },
     "settings": {
+      "dialog": {
+        "dialog_title": "Einstellungsfenster",
+        "dialog_description": "Passen Sie Ihre Anwendungseinstellungen an"
+      },
       "theme": {
         "select": "Design auswählen",
         "light": "Hell",

@@ -13,12 +13,12 @@ function applyTheme(mode: "light" | "dark" | "system") {
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
     const mode = useThemeStore((s) => s.mode);
 
-    // 1. 初始/切换时应用
+    // 1. Initial/Switch Application
     useEffect(() => {
         applyTheme(mode);
     }, [mode])
 
-    // 2. system 模式下监听系统变化
+    // 2. Listen to system changes in system mode
     useEffect(() => {
         if (mode !== "system") return;
 

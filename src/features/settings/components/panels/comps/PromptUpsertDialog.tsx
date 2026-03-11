@@ -31,7 +31,7 @@ export default function PromptUpsertDialog({
     const [name, setName] = useState("");
     const [content, setContent] = useState("");
 
-    // 打开编辑时，把数据灌进去；新增时清空
+    // When opening for editing, populate the data; clear when adding new.
     useEffect(() => {
         if (!open) return;
 
@@ -57,7 +57,6 @@ export default function PromptUpsertDialog({
         }
 
         if (isEdit && initial?.id) {
-            // 编辑：update 用 patch 也行，这里直接传全量字段更直观
             await onUpdate(initial.id, payload);
         } else {
             await onCreate(payload);
@@ -75,21 +74,16 @@ export default function PromptUpsertDialog({
                 showCloseButton={false}
                 className="w-[90vw] h-[80vh] sm:max-w-120 sm:max-h-140 p-0"
             >
-                {/* 无障碍标准 */}
                 <DialogTitle className="sr-only">
                     {isEdit ? t('common.settings.prompts.dialog.title_edit') : t('common.settings.prompts.dialog.title_create')}
                 </DialogTitle>
 
-                {/* 正式内容 */}
                 <div className="flex flex-col gap-3 justify-between py-3 min-w-0 overflow-hidden">
-                    {/* header */}
                     <div className="text-lg px-3">
                         {isEdit ? t('common.settings.prompts.dialog.title_edit') : t('common.settings.prompts.dialog.title_create')}
                     </div>
 
-                    {/* sheet */}
                     <div className="flex-1 overflow-y-auto flex flex-col gap-4 px-3 py-2">
-                        {/* <PageFiller /> */}
                         <div className="grid gap-2">
                             <Label>{t('common.settings.prompts.dialog.name')}</Label>
                             <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t('common.settings.prompts.dialog.name_placeholder')} />
@@ -105,7 +99,6 @@ export default function PromptUpsertDialog({
                         </div>
                     </div>
 
-                    {/* footer */}
                     <div className="flex gap-2 justify-end px-3">
                         <Button
                             variant="outline"

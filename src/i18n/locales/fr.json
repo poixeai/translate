@@ -200,7 +200,16 @@
       "stop_translating": "Arrêter",
       "stopped_hint": "Arrêté"
     },
+    "status": {
+      "loading": "Chargement...",
+      "no_prompts": "Aucun prompt disponible.",
+      "no_providers": "Aucun fournisseur disponible."
+    },
     "settings": {
+      "dialog": {
+        "dialog_title": "Panneau des paramètres",
+        "dialog_description": "Ajustez les préférences de l’application"
+      },
       "theme": {
         "select": "Sélectionner un thème",
         "light": "Clair",

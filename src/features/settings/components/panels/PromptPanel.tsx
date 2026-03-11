@@ -43,7 +43,6 @@ export default function PromptPanel() {
         <>
             <>
                 <div className="flex flex-col gap-2 pt-2">
-                    {/* 顶部 */}
                     <div>{t('common.settings.prompts.header')}</div>
 
                     <button
@@ -54,7 +53,6 @@ export default function PromptPanel() {
                         {t('common.settings.prompts.add_button')}
                     </button>
 
-                    {/* 内容 */}
                     <div>
                         <Table>
                             <TableHeader>
@@ -66,11 +64,11 @@ export default function PromptPanel() {
                             </TableHeader>
                             <TableBody>
                                 {!prompts ? (
-                                    <p>Loading...</p>
+                                    <p>{t("common.status.loading")}</p>
                                 ) : prompts.length === 0 ? (
                                     <TableRow>
                                         <TableCell colSpan={4} className="text-muted-foreground">
-                                            No prompts available.
+                                            {t("common.status.no_prompts")}
                                         </TableCell>
                                     </TableRow>
                                 ) : (

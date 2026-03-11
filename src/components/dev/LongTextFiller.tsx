@@ -1,5 +1,5 @@
 interface LongTextFillerProps {
-  paragraphs?: number;   // 段落数量
+  paragraphs?: number;
   className?: string;
 }
 

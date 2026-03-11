@@ -200,7 +200,16 @@
       "stop_translating": "중지",
       "stopped_hint": "중지됨"
     },
+    "status": {
+      "loading": "불러오는 중...",
+      "no_prompts": "사용 가능한 프롬프트가 없습니다.",
+      "no_providers": "사용 가능한 제공업체가 없습니다."
+    },
     "settings": {
+      "dialog": {
+        "dialog_title": "설정 패널",
+        "dialog_description": "앱 환경설정을 조정합니다"
+      },
       "theme": {
         "select": "테마 선택",
         "light": "라이트",

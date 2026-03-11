@@ -8,12 +8,11 @@ export const API_STYLES_OPTIONS = [
 
 export type APIStyle = (typeof API_STYLES_OPTIONS)[number]["value"];
 
-// value -> label 的映射
+// value -> label
 export const API_STYLES_LABEL_MAP: Record<APIStyle, string> = Object.fromEntries(
     API_STYLES_OPTIONS.map((opt) => [opt.value, opt.label])
 ) as Record<APIStyle, string>;
 
-// 便捷函数
 export function getAPIStyleLabel(style: APIStyle): string {
     return API_STYLES_LABEL_MAP[style] ?? style;
 }

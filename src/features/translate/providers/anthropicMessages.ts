@@ -14,7 +14,7 @@ export const streamWithAnthropicMessages: ProviderTranslateFn = async ({
             apiKey: provider.api_key,
             baseURL: provider.base_url,
             dangerouslyAllowBrowser: true,
-            timeout: 60 * 1000, // 60 秒
+            timeout: 60 * 1000, // 60 seconds timeout
         });
 
         const stream = await client.messages.create(

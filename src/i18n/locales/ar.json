@@ -200,7 +200,16 @@
       "stop_translating": "إيقاف",
       "stopped_hint": "تم الإيقاف"
     },
+    "status": {
+      "loading": "جارٍ التحميل...",
+      "no_prompts": "لا توجد مطالبات متاحة.",
+      "no_providers": "لا توجد موفّرات متاحة."
+    },
     "settings": {
+      "dialog": {
+        "dialog_title": "لوحة الإعدادات",
+        "dialog_description": "اضبط تفضيلات التطبيق"
+      },
       "theme": {
         "select": "اختيار النسق",
         "light": "فاتح",

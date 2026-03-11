@@ -200,7 +200,16 @@
       "stop_translating": "Parar",
       "stopped_hint": "Interrompido"
     },
+    "status": {
+      "loading": "Carregando...",
+      "no_prompts": "Nenhum prompt disponível.",
+      "no_providers": "Nenhum provedor disponível."
+    },
     "settings": {
+      "dialog": {
+        "dialog_title": "Painel de configurações",
+        "dialog_description": "Ajuste as preferências do aplicativo"
+      },
       "theme": {
         "select": "Selecionar tema",
         "light": "Claro",

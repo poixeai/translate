@@ -200,7 +200,16 @@
       "stop_translating": "रोकें",
       "stopped_hint": "रोक दिया गया"
     },
+    "status": {
+      "loading": "लोड हो रहा है...",
+      "no_prompts": "कोई प्रॉम्प्ट उपलब्ध नहीं है।",
+      "no_providers": "कोई प्रदाता उपलब्ध नहीं है।"
+    },
     "settings": {
+      "dialog": {
+        "dialog_title": "सेटिंग्स पैनल",
+        "dialog_description": "अपने ऐप की प्राथमिकताएँ समायोजित करें"
+      },
       "theme": {
         "select": "थीम चुनें",
         "light": "लाइट",

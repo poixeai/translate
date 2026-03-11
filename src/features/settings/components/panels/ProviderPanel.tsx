@@ -43,7 +43,6 @@ export default function ProviderPanel() {
     return (
         <>
             <div className="flex flex-col gap-2 pt-2">
-                {/* 顶部 */}
                 <div>{t('common.settings.providers.header')}</div>
 
                 <button
@@ -54,7 +53,6 @@ export default function ProviderPanel() {
                     {t('common.settings.providers.add_button')}
                 </button>
 
-                {/* 内容 */}
                 <div>
                     <Table>
                         <TableHeader>
@@ -68,12 +66,12 @@ export default function ProviderPanel() {
                         <TableBody>
                             {!providers ? (
                                 <TableCell colSpan={4} className="text-muted-foreground">
-                                    Loading...
+                                    {t("common.status.loading")}
                                 </TableCell>
                             ) : providers.length === 0 ? (
                                 <TableRow>
                                     <TableCell colSpan={4} className="text-muted-foreground">
-                                        No providers available.
+                                        {t("common.status.no_providers")}
                                     </TableCell>
                                 </TableRow>
                             ) : (

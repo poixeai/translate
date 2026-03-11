@@ -7,7 +7,6 @@ export type CreatePromptInput = Omit<TranslationPrompt, "id" | "created_at" | "u
 export type UpdatePromptPatch = Partial<Omit<TranslationPrompt, "id">>;
 
 export function usePrompts() {
-    // 获取列表
     const prompts = useLiveQuery(
         async () => {
             return db.translation_prompts.orderBy("updated_at").reverse().toArray();
@@ -15,7 +14,6 @@ export function usePrompts() {
         []
     )
 
-    // 添加数据
     const create = useCallback(async (input: CreatePromptInput) => {
         const now = Date.now();
         await db.translation_prompts.add({
@@ -25,7 +23,6 @@ export function usePrompts() {
         })
     }, [])
 
-    // 更新数据
     const update = useCallback(async (id: number, patch: UpdatePromptPatch) => {
         await db.translation_prompts.update(id, {
             ...patch,
@@ -33,7 +30,6 @@ export function usePrompts() {
         })
     }, [])
 
-    // 删除数据
     const remove = useCallback(async (id: number) => {
         await db.translation_prompts.delete(id);
     }, [])

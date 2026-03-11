@@ -200,7 +200,16 @@
       "stop_translating": "Detener",
       "stopped_hint": "Detenido"
     },
+    "status": {
+      "loading": "Cargando...",
+      "no_prompts": "No hay prompts disponibles.",
+      "no_providers": "No hay proveedores disponibles."
+    },
     "settings": {
+      "dialog": {
+        "dialog_title": "Panel de configuración",
+        "dialog_description": "Ajusta las preferencias de la aplicación"
+      },
       "theme": {
         "select": "Seleccionar tema",
         "light": "Claro",

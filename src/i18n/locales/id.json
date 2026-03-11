@@ -200,7 +200,16 @@
       "stop_translating": "Hentikan",
       "stopped_hint": "Dihentikan"
     },
+    "status": {
+      "loading": "Memuat...",
+      "no_prompts": "Tidak ada prompt yang tersedia.",
+      "no_providers": "Tidak ada penyedia yang tersedia."
+    },
     "settings": {
+      "dialog": {
+        "dialog_title": "Panel Pengaturan",
+        "dialog_description": "Sesuaikan preferensi aplikasi Anda"
+      },
       "theme": {
         "select": "Pilih Tema",
         "light": "Terang",

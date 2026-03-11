@@ -200,7 +200,16 @@
       "stop_translating": "停止",
       "stopped_hint": "停止済み"
     },
+    "status": {
+      "loading": "読み込み中...",
+      "no_prompts": "利用可能なプロンプトがありません。",
+      "no_providers": "利用可能なプロバイダーがありません。"
+    },
     "settings": {
+      "dialog": {
+        "dialog_title": "設定パネル",
+        "dialog_description": "アプリの設定を調整します"
+      },
       "theme": {
         "select": "テーマを選択",
         "light": "ライト",

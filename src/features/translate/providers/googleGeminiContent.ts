@@ -14,7 +14,7 @@ export const streamWithGoogleGeminiContent: ProviderTranslateFn = async ({
             apiKey: provider.api_key,
             httpOptions: {
                 baseUrl: provider.base_url,
-                timeout: 60 * 1000, // 60 秒
+                timeout: 60 * 1000, // 60 seconds timeout
             },
         });
 

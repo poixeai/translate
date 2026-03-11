@@ -200,7 +200,16 @@
       "stop_translating": "Stop",
       "stopped_hint": "Stopped"
     },
+    "status": {
+      "loading": "Loading...",
+      "no_prompts": "No prompts available.",
+      "no_providers": "No providers available."
+    },
     "settings": {
+      "dialog": {
+        "dialog_title": "Settings Panel",
+        "dialog_description": "Adjust your application preferences"
+      },
       "theme": {
         "select": "Select Theme",
         "light": "Light",

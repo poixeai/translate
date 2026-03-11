@@ -23,7 +23,6 @@ export default function PromptDeleteDialog({
 
     const display = useMemo(() => {
         if (!prompt) return "";
-        // 你可以按喜好改展示内容：只显示 name 或者 name + base_url
         const name = prompt.name ?? "";
         return name;
     }, [prompt]);
@@ -50,11 +49,9 @@ export default function PromptDeleteDialog({
                     showCloseButton={false}
                     className="sm:max-w-100 p-0"
                 >
-                    {/* a11y */}
                     <DialogTitle className="sr-only">{t('common.settings.prompts.delete.title')}</DialogTitle>
 
                     <div className="p-6 space-y-5">
-                        {/* title */}
                         <div className="space-y-1">
                             <div className="text-lg">
                                 {t('common.settings.prompts.delete.title')}
@@ -64,13 +61,11 @@ export default function PromptDeleteDialog({
                             </p>
                         </div>
 
-                        {/* preview input (像截图那样一条输入框展示对象) */}
                         <div className="space-y-2">
                             <div className="text-sm font-medium">{t('common.settings.prompts.delete.confirm')}</div>
                             <Input value={display} readOnly className="h-11" />
                         </div>
 
-                        {/* actions */}
                         <div className="flex justify-end gap-3 pt-1">
                             <Button
                                 variant="secondary"

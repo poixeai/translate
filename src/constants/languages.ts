@@ -1,8 +1,8 @@
 export interface Language {
   code: string;
   i18nKey: string;
-  nativeName: string; // 若未配置 i18n，将展示 nativeName
-  promptName: string; // 用于构建 prompt 的语言名称，使用英语
+  nativeName: string; // If i18n is not configured, nativeName will be displayed.
+  promptName: string; // The name of the language used to build prompts is English.
   searchTerms: string[];
 }
 

@@ -65,13 +65,10 @@ export default function PromptSelectorDialog() {
                     showCloseButton={false}
                     className="w-[90vw] h-[80vh] sm:max-w-120 sm:max-h-140 p-0 dark:bg-[#212121]"
                 >
-                    {/* 无障碍标准 */}
                     <DialogTitle className="sr-only">{t("common.preferences.select_prompt.dialog_title")}</DialogTitle>
                     <DialogDescription className="sr-only">{t("common.preferences.select_prompt.dialog_description")}</DialogDescription>
 
-                    {/* 正式内容 */}
                     <div className="flex flex-col py-2 min-h-0 overflow-hidden">
-                        {/* 顶部搜索 */}
                         <div className="border-b px-4 pt-2 pb-3 flex flex-row items-center gap-2">
                             <SearchIcon className="w-5 h-5 text-muted-foreground" />
                             <input
@@ -82,7 +79,6 @@ export default function PromptSelectorDialog() {
                             />
                         </div>
 
-                        {/* Prompt 列表 */}
                         <div className="flex-1 overflow-y-auto px-2 py-2">
                             <div className="flex flex-col gap-2">
                                 {filteredPrompts.map((item) => {

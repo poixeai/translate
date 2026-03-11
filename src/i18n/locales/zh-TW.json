@@ -200,7 +200,16 @@
       "stop_translating": "停止",
       "stopped_hint": "已停止"
     },
+    "status": {
+      "loading": "載入中...",
+      "no_prompts": "暫無可用提示詞。",
+      "no_providers": "暫無可用提供者。"
+    },
     "settings": {
+      "dialog": {
+        "dialog_title": "設定面板",
+        "dialog_description": "調整應用程式偏好設定"
+      },
       "theme": {
         "select": "選擇主題",
         "light": "淺色",

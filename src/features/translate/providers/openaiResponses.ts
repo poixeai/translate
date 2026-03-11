@@ -14,7 +14,7 @@ export const streamWithOpenAIResponses: ProviderTranslateFn = async ({
             apiKey: provider.api_key,
             baseURL: `${provider.base_url}/v1`,
             dangerouslyAllowBrowser: true,
-            timeout: 60 * 1000, // 60 秒
+            timeout: 60 * 1000, // 60 seconds timeout
         });
 
         const stream = await client.responses.create(
