@@ -13,6 +13,7 @@ export const streamWithOpenAICompletions: ProviderTranslateFn = async ({
         apiKey: provider.api_key,
         baseURL: `${provider.base_url}/v1`,
         dangerouslyAllowBrowser: true, // 如果在浏览器端调用需要这个
+        timeout: 60 * 1000, // 60 秒
     });
 
     const stream = await client.chat.completions.create(

@@ -12,7 +12,11 @@
       "save": "Save",
       "delete": "Delete",
       "deleting": "Deleting...",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "translate": "Translate",
+      "translating": "Translating",
+      "stop_translating": "Stop",
+      "stopped_hint": "Stopped"
     },
     "settings": {
       "theme": {
@@ -108,7 +112,6 @@
     "frame": {
       "input": {
         "auto_detect": "Auto Detect",
-        "translate": "Translate",
         "placeholder": "Type to translate."
       },
       "footer": {

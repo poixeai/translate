@@ -3,7 +3,7 @@ import { usePreferences } from "@/stores/preferences.store";
 import { providerTranslators } from "../providers";
 import { buildTranslationPrompt } from "./buildTranslationPrompt";
 
-export async function runTranslate() {
+export async function runTranslate(signal?: AbortSignal) {
     const {
         sourceText,
         targetLanguage,
@@ -62,5 +62,6 @@ export async function runTranslate() {
             const current = usePreferences.getState().translatedText;
             usePreferences.getState().setTranslatedText(current + delta);
         },
+        signal,
     });
 }

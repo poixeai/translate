@@ -1,22 +1,33 @@
 import { useTranslation } from 'react-i18next';
 import ModelSelectorDialog from './comps/ModelSelectorDialog';
 import { usePreferences } from '@/stores/preferences.store';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import LanguageSelectorDialog from './comps/LanguageSelectorDialog';
 import PromptSelectorDialog from './comps/PromptSelectorDialog';
 import { useTranslate } from '../hooks/useTranslate';
+import { Spinner } from "@/components/ui/spinner"
+import { Square } from 'lucide-react';
+import { SpinnerOld } from '@/components/ui/spinner-old';
 
 export function Translator() {
     const { t } = useTranslation();
 
     const { sourceText, setSourceText, translatedText, setTranslatedText } = usePreferences();
-    const { handleTranslate, isTranslating } = useTranslate();
+    const { handleTranslate, isTranslating, stopTranslate } = useTranslate();
 
     const inputTextareaRef = useRef<HTMLTextAreaElement | null>(null);
     const outputTextareaRef = useRef<HTMLTextAreaElement | null>(null);
 
     const translateButtonRef = useRef<HTMLButtonElement | null>(null);
     const lastEscTimeRef = useRef(0);
+
+    const [isTranslateButtonHovered, setIsTranslateButtonHovered] = useState(false);
+
+    const shouldAutoScrollOutputRef = useRef(true);
+
+    const isNearBottom = (el: HTMLTextAreaElement, threshold = 24) => {
+        return Math.abs(el.scrollHeight - el.clientHeight - el.scrollTop) <= threshold;
+    };
 
     const syncBothTextareaHeights = () => {
         const inputEl = inputTextareaRef.current;
@@ -52,8 +63,60 @@ export function Translator() {
         outputEl.style.overflowY = outputEl.scrollHeight > sharedHeight ? "auto" : "hidden";
     };
 
+    const handleTranslateWithReset = async () => {
+        shouldAutoScrollOutputRef.current = true;
+
+        const outputEl = outputTextareaRef.current;
+        if (outputEl) {
+            outputEl.scrollTop = outputEl.scrollHeight;
+        }
+
+        await handleTranslate();
+    };
+
+    const appendStoppedHint = () => {
+        const { translatedText, setTranslatedText } = usePreferences.getState();
+
+        const hint = t("common.button.stopped_hint");
+        const trimmed = translatedText.trimEnd();
+
+        if (!trimmed) {
+            setTranslatedText(`⸺ ${hint}`);
+            return;
+        }
+
+        if (trimmed.endsWith(`⸺ ${hint}`)) {
+            return;
+        }
+
+        setTranslatedText(`${trimmed}\n\n⸺ ${hint}`);
+    };
+
+    const handleTranslateButtonClick = async () => {
+        if (isTranslating) {
+            stopTranslate();
+            appendStoppedHint();
+            return;
+        }
+
+        await handleTranslateWithReset();
+    };
+
+    const translateButtonText = (() => {
+        if (!isTranslating) return t("common.button.translate");
+        if (isTranslateButtonHovered) return t("common.button.stop_translating");
+        return t("common.button.translating");
+    })();
+
     useEffect(() => {
         syncBothTextareaHeights();
+
+        const outputEl = outputTextareaRef.current;
+        if (!outputEl) return;
+
+        if (shouldAutoScrollOutputRef.current) {
+            outputEl.scrollTop = outputEl.scrollHeight;
+        }
     }, [sourceText, translatedText]);
 
     useEffect(() => {
@@ -66,13 +129,6 @@ export function Translator() {
 
         return () => window.removeEventListener("resize", handleResize);
     }, []);
-
-    // const handleTranslate = async () => {
-    //     if (!sourceText.trim()) return;
-
-    //     const result = "这里是翻译结果\n\n\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n这里是翻译结果\n\n";
-    //     setTranslatedText(result);
-    // };
 
     const flashTranslateButtonPress = () => {
         const el = translateButtonRef.current;
@@ -92,7 +148,7 @@ export function Translator() {
         if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
             e.preventDefault();
             flashTranslateButtonPress();
-            handleTranslate();
+            handleTranslateWithReset();
             return;
         }
 
@@ -136,20 +192,30 @@ export function Translator() {
                     ></textarea>
 
                     {/* left footer */}
-                    <div className="px-4 py-0 flex justify-end mb-1 mt-1">
+                    <div className="px-4 py-0 flex justify-end my-2">
                         <button
                             ref={translateButtonRef}
                             className="apple-press text-sm flex items-center gap-1 border px-3 py-1 w-fit rounded-lg cursor-pointer hover:bg-[#ececec] dark:bg-[#2f2f2f] dark:hover:bg-[#424242] text-muted-foreground"
-                            onClick={handleTranslate}
-                            disabled={isTranslating || !sourceText.trim()}
+                            onClick={handleTranslateButtonClick}
+                            onMouseEnter={() => setIsTranslateButtonHovered(true)}
+                            onMouseLeave={() => setIsTranslateButtonHovered(false)}
+                            disabled={!isTranslating && !sourceText.trim()}
                         >
-                            {t("common.frame.input.translate")}
+                            {isTranslating ? (
+                                isTranslateButtonHovered ? (
+                                    <Square className="w-4 h-4 fill-current" />
+                                ) : (
+                                    <Spinner data-icon="inline-start" />
+                                )
+                            ) : null}
+
+                            {translateButtonText}
                         </button>
                     </div>
                 </div>
 
                 {/* 右侧输出 */}
-                <div className="flex flex-col">
+                <div className="flex flex-col relative">
                     <div className="border-b px-4 py-2 flex justify-between items-center">
                         <LanguageSelectorDialog />
 
@@ -161,7 +227,16 @@ export function Translator() {
                         className="px-4 py-2 w-full bg-transparent border-0 outline-none focus:outline-none ring-0 focus:ring-0 shadow-none resize-none"
                         value={translatedText}
                         readOnly
+                        onScroll={(e) => {
+                            shouldAutoScrollOutputRef.current = isNearBottom(e.currentTarget);
+                        }}
                     ></textarea>
+
+                    {isTranslating && !translatedText && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <SpinnerOld className="size-5" />
+                        </div>
+                    )}
                 </div>
             </div>
         </>
