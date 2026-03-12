@@ -47,7 +47,7 @@ jobs:
 
       - name: Create or update GitHub Release and upload artifact
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           TAG="${GITHUB_REF_NAME}"
           ASSET="${APP_NAME}-${TAG}.tar.gz"
