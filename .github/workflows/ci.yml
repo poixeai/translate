@@ -43,7 +43,7 @@ jobs:
       - name: Package artifact
         run: |
           cd ${{ env.WORKING_DIRECTORY }}
-          tar -zcvf ../${{ env.APP_NAME }}-${{ github.ref_name }}.tar.gz dist
+          tar -zcvf ${{ env.APP_NAME }}-${{ github.ref_name }}.tar.gz dist
 
       - name: Create or update GitHub Release and upload artifact
         env:
