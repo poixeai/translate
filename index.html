@@ -1,13 +1,83 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/x.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Poixe Translate</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/x.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Poixe Translate</title>
+  <meta name="description"
+    content="Poixe Translate is an open-source, lightweight web translation tool powered by AI large language models. It supports custom model providers, 4 mainstream API protocols, 186 translation languages, and browser-local configuration storage." />
+  <meta name="keywords"
+    content="AI translation, web translation tool, open-source translator, browser translation app, LLM translation, OpenAI translation, Anthropic translation, Gemini translation, custom model provider, AI translation prompts, multilingual translation, self-hosted translation frontend, Vite translation app, React translation tool" />
+  <meta name="author" content="Poixe Team" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#ffffff" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://translate.poixe.com/" />
+  <meta property="og:title" content="Poixe Translate" />
+  <meta property="og:description"
+    content="An open-source, lightweight web translation tool powered by AI large language models." />
+  <meta property="og:image" content="https://poixe.com/og.png" />
+  <meta property="og:site_name" content="Poixe Translate" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@poixeai" />
+  <meta name="twitter:title" content="Poixe Translate" />
+  <meta name="twitter:description"
+    content="An open-source, lightweight web translation tool powered by AI large language models." />
+  <meta name="twitter:image" content="https://poixe.com/og.png" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://translate.poixe.com/" />
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Poixe Translate",
+        "url": "https://translate.poixe.com/",
+        "description": "Poixe Translate is an open-source, lightweight web translation tool powered by AI large language models.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Poixe Team",
+          "url": "https://poixe.com/"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://translate.poixe.com/",
+          "query-input": "required name=search_term_string"
+        }
+      }
+  </script>
+
+  <!-- Matomo -->
+  <script>
+    var _paq = window._paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function () {
+      var u = "//matomo.xbqx.com/";
+      _paq.push(['setTrackerUrl', u + 'matomo.php']);
+      _paq.push(['setSiteId', '3']);
+      var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+      g.async = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
+    })();
+  </script>
+  <!-- End Matomo Code -->
+
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>
