@@ -1,0 +1,152 @@
+name: Godeploy [translate]
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+# ==== Variable modification starts. ====
+env:
+  APP_NAME: translate
+  WORKING_DIRECTORY: .
+  REMOTE_WORKDIR: /srv/app/translate
+  CHECK_SYSTEMD: false
+# ==== Variable modification ends. ====
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "${{ env.WORKING_DIRECTORY }}/package-lock.json"
+
+      - name: Build project
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: |
+          npm ci
+          npm run build
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+      - name: Package artifact
+        run: |
+          cd ${{ env.WORKING_DIRECTORY }}
+          tar -zcvf ../${{ env.APP_NAME }}-${{ github.ref_name }}.tar.gz dist
+
+      - name: Create or update GitHub Release and upload artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          ASSET="${APP_NAME}-${TAG}.tar.gz"
+
+          echo "Using tag: $TAG"
+          echo "Asset file: $ASSET"
+
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG not found, trying to create..."
+            if ! gh release create "$TAG" \
+              --title "$TAG" \
+              --notes "" >/dev/null 2>&1; then
+              echo "Release create failed (maybe already exists), continue anyway..."
+            fi
+          else
+            echo "Release $TAG already exists, will just upload asset."
+          fi
+
+          gh release upload "$TAG" "$ASSET" --clobber
+  deploy:
+    needs: build-and-release
+    if: ${{ always() && (needs.build-and-release.result == 'success' || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Show deploy info
+        run: |
+          echo "APP_NAME      : ${{ env.APP_NAME }}"
+          echo "REMOTE_WORKDIR: ${{ env.REMOTE_WORKDIR }}"
+          echo "github.ref     : ${{ github.ref }}"
+          echo "github.ref_name: ${{ github.ref_name }}"
+          echo "NOTE: Please select the tag to be deployed in 'Use workflow from'."
+
+      - name: Deploy via godeploy on remote host
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST_STORAGE }}
+          username: "leon"
+          key: ${{ secrets.SSH_KEY_HETZNER }}
+          port: "22"
+          command_timeout: 30m
+          script: |
+            set -euo pipefail
+
+            APP_NAME="${{ env.APP_NAME }}"
+            REMOTE_WORKDIR="${{ env.REMOTE_WORKDIR }}"
+            TARGET_TAG="${{ github.ref_name }}"
+            SYSTEMD_UNIT="${APP_NAME}.service"
+            CHECK_SYSTEMD="${{ env.CHECK_SYSTEMD }}"
+
+            echo "===> Host: $(hostname)"
+            echo "===> APP_NAME      : ${APP_NAME}"
+            echo "===> REMOTE_WORKDIR: ${REMOTE_WORKDIR}"
+            echo "===> TARGET_TAG    : ${TARGET_TAG}"
+            echo "===> SYSTEMD_UNIT  : ${SYSTEMD_UNIT}"
+            echo
+
+            if ! command -v godeploy >/dev/null 2>&1; then
+              echo "[ERROR] godeploy not found on remote host."
+              echo "        Please install godeploy on the server before running this workflow."
+              echo "        For example: curl -fsSL https://raw.githubusercontent.com/terobox/godeploy/main/install.sh | sudo bash"
+              exit 1
+            fi
+            echo "[INFO] godeploy found: $(command -v godeploy)"
+            godeploy --version || true
+            echo
+
+            if [ ! -d "${REMOTE_WORKDIR}" ]; then
+              echo "[ERROR] Remote workdir not found: ${REMOTE_WORKDIR}"
+              exit 1
+            fi
+            cd "${REMOTE_WORKDIR}"
+
+            if [ ! -f "./godeploy.env" ]; then
+              echo "[ERROR] ./godeploy.env not found in ${REMOTE_WORKDIR}"
+              echo "        Please run on the server: cd ${REMOTE_WORKDIR} && godeploy init and configure REPO/APP_NAME etc."
+              exit 1
+            fi
+
+            echo "[INFO] Using godeploy.env in $(pwd)/godeploy.env"
+            echo
+
+            echo "===> Running godeploy ${TARGET_TAG} ..."
+            godeploy "${TARGET_TAG}"
+
+            if [ "${CHECK_SYSTEMD}" = "true" ]; then
+              echo
+              echo "===> Checking systemd unit status: ${SYSTEMD_UNIT}"
+
+              if ! sudo systemctl is-active --quiet "${SYSTEMD_UNIT}"; then
+                echo "[ERROR] systemd unit is not active: ${SYSTEMD_UNIT}"
+                sudo systemctl status "${SYSTEMD_UNIT}" --no-pager -l || true
+                exit 1
+              fi
+
+              sudo systemctl status "${SYSTEMD_UNIT}" --no-pager -l | head -n 30 || true
+            else
+              echo "[INFO] CHECK_SYSTEMD=false, skip systemd status check."
+            fi
+
+            echo
+            echo "[SUCCESS] ${APP_NAME} (${SYSTEMD_UNIT}) deployed with tag ${TARGET_TAG}."
