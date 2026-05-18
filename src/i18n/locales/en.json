@@ -198,12 +198,14 @@
       "translate": "Translate",
       "translating": "Translating",
       "stop_translating": "Stop",
-      "stopped_hint": "Stopped"
+      "stopped_hint": "Stopped",
+      "sign_out": "Sign Out"
     },
     "status": {
       "loading": "Loading...",
       "no_prompts": "No prompts available.",
-      "no_providers": "No providers available."
+      "no_providers": "No providers available.",
+      "no_users": "No users available."
     },
     "settings": {
       "dialog": {
@@ -227,7 +229,8 @@
         "general": "General",
         "providers": "Models",
         "prompts": "Prompts",
-        "about": "About"
+        "about": "About",
+        "users": "Users"
       },
       "about": {
         "description": "Poixe Translate is an open-source translation tool. Based on AI large models, it supports custom model providers and provides reliable translation services.",
@@ -277,6 +280,27 @@
           "content": "This action takes effect immediately. After deletion, you will no longer be able to use this translation prompt, and it cannot be recovered.",
           "confirm": "About to delete:"
         }
+      },
+      "users": {
+        "header": "User Management",
+        "add_button": "Add User",
+        "sheet": {
+          "username": "Username",
+          "role": "Role",
+          "display_name": "Display Name"
+        },
+        "dialog": {
+          "title_create": "Create User",
+          "title_edit": "Edit User",
+          "username": "Username",
+          "password": "Password",
+          "password_optional": "Leave blank to keep current password",
+          "role": "Role",
+          "display_name": "Display Name",
+          "email": "Email",
+          "delete_title": "Delete User",
+          "delete_confirm": "Are you sure you want to delete user {{username}}?"
+        }
       }
     },
     "preferences": {
@@ -308,8 +332,18 @@
       "footer": {
         "shortcuts": {
           "translate": "Translate",
+          "newline": "New Line",
           "clear": "Clear"
         }
+      },
+      "output": {
+        "zh_en_auto": "Chinese ↔ English"
+      },
+      "mode": {
+        "auto": "Auto",
+        "manual": "Manual",
+        "switch_to_auto": "Switch to auto Chinese-English translation",
+        "switch_to_manual": "Switch to manual mode"
       }
     },
     "error": {

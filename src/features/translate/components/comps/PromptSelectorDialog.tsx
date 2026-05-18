@@ -5,7 +5,7 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
-import { usePrompts } from "@/hooks/usePrompts";
+import { usePromptsApi } from "@/hooks/usePromptsApi";
 import { cn } from "@/lib/utils";
 import { usePreferences } from "@/stores/preferences.store";
 import { ChevronDown, ChevronUp, SearchIcon } from 'lucide-react';
@@ -17,7 +17,7 @@ export default function PromptSelectorDialog() {
     const [open, setOpen] = useState(false);
     const [keyword, setKeyword] = useState("");
 
-    const { prompts } = usePrompts();
+    const { prompts } = usePromptsApi();
     const { selectedPromptId, setSelectedPromptId } = usePreferences();
 
     const filteredPrompts = useMemo(() => {

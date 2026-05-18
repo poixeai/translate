@@ -5,8 +5,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { TranslationPrompt } from "@/types/prompts";
-import type { CreatePromptInput, UpdatePromptPatch } from "@/hooks/usePrompts";
+import type { TranslationPrompt } from "@/hooks/usePromptsApi";
+
 
 type Props = {
     open: boolean;
@@ -14,8 +14,8 @@ type Props = {
 
     initial?: TranslationPrompt | null;
 
-    onCreate: (data: CreatePromptInput) => Promise<void>;
-    onUpdate: (id: number, patch: UpdatePromptPatch) => Promise<void>;
+    onCreate: (data: { name: string; content: string }) => Promise<void>;
+    onUpdate: (id: number, patch: Partial<TranslationPrompt>) => Promise<void>;
 };
 
 export default function PromptUpsertDialog({

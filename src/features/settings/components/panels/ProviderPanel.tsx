@@ -7,9 +7,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { useProviders } from "@/hooks/useProviders";
+import { useProvidersApi, type Provider } from "@/hooks/useProvidersApi";
 import { useState } from "react";
-import { getAPIStyleLabel, type ModelProvider } from "@/types/providers";
+import { getAPIStyleLabel } from "@/types/providers";
 import ProviderUpsertDialog from "./comps/ProviderUpsertDialog";
 import { normalizeAndDedupeModels } from "@/utils/models";
 import ProviderDeleteDialog from "./comps/ProviderDeleteDialog";
@@ -17,25 +17,25 @@ import { useTranslation } from "react-i18next";
 
 export default function ProviderPanel() {
     const { t } = useTranslation();
-    const { providers, create, update, remove } = useProviders();
+    const { providers, create, update, remove } = useProvidersApi();
 
     const [open, setOpen] = useState(false);
-    const [editing, setEditing] = useState<ModelProvider | null>(null);
+    const [editing, setEditing] = useState<Provider | null>(null);
 
     const [deleteOpen, setDeleteOpen] = useState(false);
-    const [deleting, setDeleting] = useState<ModelProvider | null>(null);
+    const [deleting, setDeleting] = useState<Provider | null>(null);
 
     const openCreate = () => {
         setEditing(null);
         setOpen(true);
     }
 
-    const openEdit = (p: ModelProvider) => {
+    const openEdit = (p: Provider) => {
         setEditing(p);
         setOpen(true);
     }
 
-    const openDelete = (p: ModelProvider) => {
+    const openDelete = (p: Provider) => {
         setDeleting(p);
         setDeleteOpen(true);
     }
@@ -64,11 +64,7 @@ export default function ProviderPanel() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {!providers ? (
-                                <TableCell colSpan={4} className="text-muted-foreground">
-                                    {t("common.status.loading")}
-                                </TableCell>
-                            ) : providers.length === 0 ? (
+                            {providers.length === 0 ? (
                                 <TableRow>
                                     <TableCell colSpan={4} className="text-muted-foreground">
                                         {t("common.status.no_providers")}

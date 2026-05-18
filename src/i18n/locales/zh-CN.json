@@ -198,12 +198,14 @@
       "translate": "翻译",
       "translating": "翻译中",
       "stop_translating": "停止",
-      "stopped_hint": "已停止"
+      "stopped_hint": "已停止",
+      "sign_out": "退出登录"
     },
     "status": {
       "loading": "加载中...",
       "no_prompts": "暂无可用提示词。",
-      "no_providers": "暂无可用提供商。"
+      "no_providers": "暂无可用提供商。",
+      "no_users": "暂无可用用户。"
     },
     "settings": {
       "dialog": {
@@ -227,7 +229,8 @@
         "general": "常规",
         "providers": "模型",
         "prompts": "提示词",
-        "about": "关于"
+        "about": "关于",
+        "users": "用户管理"
       },
       "about": {
         "description": "Poixe Translate 是一个开源的翻译工具。基于 AI 大模型，支持自定义模型厂商，提供可靠的翻译服务。",
@@ -277,6 +280,27 @@
           "content": "删除操作将立即生效。删除后，您将无法再使用此翻译提示词，且无法恢复。",
           "confirm": "即将删除："
         }
+      },
+      "users": {
+        "header": "用户管理",
+        "add_button": "添加用户",
+        "sheet": {
+          "username": "用户名",
+          "role": "角色",
+          "display_name": "显示名称"
+        },
+        "dialog": {
+          "title_create": "创建用户",
+          "title_edit": "编辑用户",
+          "username": "用户名",
+          "password": "密码",
+          "password_optional": "留空则保持当前密码不变",
+          "role": "角色",
+          "display_name": "显示名称",
+          "email": "邮箱",
+          "delete_title": "删除用户",
+          "delete_confirm": "确定要删除用户 {{username}} 吗？"
+        }
       }
     },
     "preferences": {
@@ -308,8 +332,18 @@
       "footer": {
         "shortcuts": {
           "translate": "翻译",
+          "newline": "换行",
           "clear": "清空"
         }
+      },
+      "output": {
+        "zh_en_auto": "中英自动互译"
+      },
+      "mode": {
+        "auto": "自动",
+        "manual": "手动",
+        "switch_to_auto": "切换到中英自动互译",
+        "switch_to_manual": "切换到手动模式"
       }
     },
     "error": {

@@ -7,7 +7,9 @@ import { TranslateKnownError } from "./translateError";
 export async function runTranslate(signal?: AbortSignal) {
     const {
         sourceText,
+        sourceLanguage,
         targetLanguage,
+        translationMode,
         selectedModel,
         selectedPromptId,
         setTranslatedText,
@@ -21,7 +23,7 @@ export async function runTranslate(signal?: AbortSignal) {
         throw new TranslateKnownError("model_required");
     }
 
-    if (!targetLanguage) {
+    if (translationMode === "manual" && !targetLanguage) {
         throw new TranslateKnownError("target_language_required");
     }
 
@@ -41,7 +43,9 @@ export async function runTranslate(signal?: AbortSignal) {
 
     const finalPrompt = buildTranslationPrompt({
         promptContent: prompt.content,
+        sourceLanguage,
         targetLanguage,
+        translationMode,
     });
 
     setTranslatedText("");

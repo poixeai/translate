@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { CreateProviderInput, UpdateProviderPatch } from "@/hooks/useProviders";
-import { API_STYLES_OPTIONS, type APIStyle, type ModelProvider } from "@/types/providers";
+import type { Provider } from "@/hooks/useProvidersApi";
+import { API_STYLES_OPTIONS, type APIStyle } from "@/types/providers";
 import { useEffect, useMemo, useState } from "react";
 import { normalizeAndDedupeModels } from "@/utils/models";
 import { useTranslation } from "react-i18next";
@@ -14,10 +14,10 @@ type Props = {
     open: boolean;
     onOpenChange: (v: boolean) => void;
 
-    initial?: ModelProvider | null;
+    initial?: Provider | null;
 
-    onCreate: (data: CreateProviderInput) => Promise<void>;
-    onUpdate: (id: number, patch: UpdateProviderPatch) => Promise<void>;
+    onCreate: (data: Omit<Provider, "id" | "created_at" | "updated_at">) => Promise<void>;
+    onUpdate: (id: number, patch: Partial<Provider>) => Promise<void>;
 };
 
 export default function ProviderUpsertDialog({
@@ -36,14 +36,13 @@ export default function ProviderUpsertDialog({
     const [apiStyle, setApiStyle] = useState<APIStyle>("openai_completions");
     const [models, setModels] = useState("");
 
-    // When opening for editing, populate the data; clear when adding new.
     useEffect(() => {
         if (!open) return;
 
         if (initial) {
             setName(initial.name ?? "");
             setBaseUrl(initial.base_url ?? "");
-            setApiKey(initial.api_key ?? "");
+            setApiKey("");
             setApiStyle(initial.api_style ?? "openai_completions");
             setModels((initial.models ?? "").split(",").join("\n"));
         } else {
@@ -53,11 +52,11 @@ export default function ProviderUpsertDialog({
             setApiStyle("openai_completions");
             setModels("");
         }
-    }, [open, initial])
+    }, [open, initial]);
 
     const canSubmit = useMemo(() => {
-        return !!(name.trim() && baseUrl.trim() && apiKey.trim() && models.trim());
-    }, [name, baseUrl, apiKey, apiStyle, models])
+        return !!(name.trim() && baseUrl.trim() && models.trim() && (isEdit || apiKey.trim()));
+    }, [name, baseUrl, apiKey, isEdit, models]);
 
     const modelsInfo = useMemo(() => normalizeAndDedupeModels(models), [models]);
 
@@ -70,7 +69,7 @@ export default function ProviderUpsertDialog({
             api_key: apiKey.trim(),
             api_style: apiStyle,
             models: modelsInfo.csv,
-        }
+        };
 
         if (isEdit && initial?.id) {
             await onUpdate(initial.id, payload);
@@ -112,7 +111,16 @@ export default function ProviderUpsertDialog({
 
                         <div className="grid gap-2">
                             <Label>{t('common.settings.providers.dialog.api_key')}</Label>
-                            <Input value={apiKey} onChange={(e) => setApiKey(e.target.value)} placeholder="sk-..." />
+                            <Input
+                                value={apiKey}
+                                onChange={(e) => setApiKey(e.target.value)}
+                                placeholder={isEdit ? "Leave blank to keep the current key" : "sk-..."}
+                            />
+                            {isEdit ? (
+                                <div className="text-xs text-muted-foreground">
+                                    Keep this empty to preserve the current encrypted API key.
+                                </div>
+                            ) : null}
                         </div>
 
                         <div className="grid gap-2">
@@ -138,7 +146,6 @@ export default function ProviderUpsertDialog({
                         </div>
                     </div>
 
-                    {/* footer */}
                     <div className="flex gap-2 justify-end px-3">
                         <Button
                             variant="outline"

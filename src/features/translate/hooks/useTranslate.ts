@@ -1,61 +1,100 @@
 import { useCallback, useRef, useState } from "react";
-import { runTranslate } from "../services/translate";
+import { api } from "@/lib/api";
+import { usePreferences } from "@/stores/preferences.store";
 import type { TranslateError } from "@/types/translate";
-import { TranslateKnownError } from "../services/translateError";
 
 export function useTranslate() {
     const [isTranslating, setIsTranslating] = useState(false);
-    const abortControllerRef = useRef<AbortController | null>(null);
+    const abortRef = useRef<AbortController | null>(null);
     const [translateError, setTranslateError] = useState<TranslateError | null>(null);
+    const isTranslatingRef = useRef(false);
 
     const handleTranslate = useCallback(async () => {
-        if (isTranslating) return;
+        if (isTranslatingRef.current) return;
+        isTranslatingRef.current = true;
 
-        const controller = new AbortController();
-        abortControllerRef.current = controller;
+        const {
+            sourceText,
+            sourceLanguage,
+            targetLanguage,
+            translationMode,
+            selectedModel,
+            selectedPromptId,
+            setTranslatedText,
+        } = usePreferences.getState();
+
+        if (!sourceText.trim() || !selectedModel || selectedPromptId == null) {
+            isTranslatingRef.current = false;
+            return;
+        }
+
+        setIsTranslating(true);
+        setTranslateError(null);
+        setTranslatedText("");
 
         try {
-            setIsTranslating(true);
-            await runTranslate(controller.signal);
-        } catch (error) {
-            if (error instanceof DOMException && error.name === "AbortError") {
-                return;
-            }
+            const stream = api.translate({
+                source_text: sourceText,
+                source_language: sourceLanguage,
+                target_language: targetLanguage,
+                translation_mode: translationMode,
+                provider_id: selectedModel.providerId,
+                model: selectedModel.model,
+                prompt_id: selectedPromptId,
+            });
 
-            if (error instanceof TranslateKnownError) {
-                setTranslateError({
-                    code: error.code,
-                });
+            abortRef.current = new AbortController();
+            abortRef.current.signal.addEventListener("abort", () => {
+                stream.abort();
+            });
+
+            stream.onDelta((delta) => {
+                const current = usePreferences.getState().translatedText;
+                usePreferences.getState().setTranslatedText(current + delta);
+            });
+
+            stream.onError((error) => {
+                setTranslateError({ message: error });
+                setIsTranslating(false);
+                abortRef.current = null;
+                isTranslatingRef.current = false;
+            });
+
+            stream.onComplete(() => {
+                setIsTranslating(false);
+                abortRef.current = null;
+                isTranslatingRef.current = false;
+            });
+        } catch (error: unknown) {
+            if (error instanceof DOMException && error.name === "AbortError") {
+                setIsTranslating(false);
+                abortRef.current = null;
+                isTranslatingRef.current = false;
                 return;
             }
 
             if (typeof error === "object" && error !== null) {
-                const e = error as {
-                    message?: string;
-                    status?: number;
-                    body?: string;
-                };
-
+                const e = error as { message?: string; status?: number; body?: string };
                 setTranslateError({
                     message: e.message ?? "Translation failed",
                     status: e.status,
                     body: e.body,
                 });
-                return;
+            } else {
+                setTranslateError({
+                    message: "Translation failed",
+                    body: String(error),
+                });
             }
 
-            setTranslateError({
-                message: "Translation failed",
-                body: String(error),
-            });
-        } finally {
             setIsTranslating(false);
-            abortControllerRef.current = null;
+            abortRef.current = null;
+            isTranslatingRef.current = false;
         }
-    }, [isTranslating]);
+    }, []);
 
     const stopTranslate = useCallback(() => {
-        abortControllerRef.current?.abort();
+        abortRef.current?.abort();
     }, []);
 
     return {

@@ -1,19 +1,4 @@
-import type { ModelProvider } from "./providers";
-
-export type TranslateExecuteParams = {
-    provider: Pick<
-        ModelProvider,
-        "id" | "name" | "base_url" | "api_key" | "api_style"
-    >;
-    model: string;
-    targetLanguage: string;
-    sourceText: string;
-    promptContent: string;
-    onDelta: (text: string) => void;
-    signal?: AbortSignal;
-};
-
-export type ProviderTranslateFn = (params: TranslateExecuteParams) => Promise<void>;
+import type { ModelProvider } from "@/types/providers";
 
 export type TranslateError = {
     code?: string;
@@ -21,3 +6,15 @@ export type TranslateError = {
     status?: number;
     body?: string;
 };
+
+export type ProviderTranslateParams = {
+    provider: ModelProvider;
+    model: string;
+    sourceText: string;
+    targetLanguage: string;
+    promptContent: string;
+    onDelta: (delta: string) => void;
+    signal?: AbortSignal;
+};
+
+export type ProviderTranslateFn = (params: ProviderTranslateParams) => Promise<void>;

@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
-import type { TranslationPrompt } from "@/types/prompts";
+import type { TranslationPrompt } from "@/hooks/usePromptsApi";
 
 type Props = {
     open: boolean;

@@ -12,11 +12,18 @@ export default function Footer() {
         <div className="hidden sm:flex items-center gap-5 text-xs">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
+              <Kbd>Enter</Kbd>
+            </div>
+            <span>{t("common.frame.footer.shortcuts.translate")}</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <Kbd>⌘</Kbd>
               <span>+</span>
               <Kbd>Enter</Kbd>
             </div>
-            <span>{t("common.frame.footer.shortcuts.translate")}</span>
+            <span>{t("common.frame.footer.shortcuts.newline")}</span>
           </div>
 
           <div className="flex items-center gap-2">

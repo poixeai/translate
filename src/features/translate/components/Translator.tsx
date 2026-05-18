@@ -10,11 +10,12 @@ import { Square } from 'lucide-react';
 import { SpinnerOld } from '@/components/ui/spinner-old';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
+import { TranslationModeToggle } from './comps/TranslationModeToggle';
 
 export function Translator() {
     const { t } = useTranslation();
 
-    const { sourceText, setSourceText, translatedText, setTranslatedText } = usePreferences();
+    const { sourceText, setSourceText, translatedText, setTranslatedText, translationMode } = usePreferences();
     const { handleTranslate, isTranslating, stopTranslate, translateError, setTranslateError } = useTranslate();
 
     const inputTextareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -41,7 +42,6 @@ export function Translator() {
         const minHeight = 300;
         const bottomGap = 100;
 
-        // First set everything to auto to get the actual scrollHeight.
         inputEl.style.height = "auto";
         outputEl.style.height = "auto";
 
@@ -66,8 +66,6 @@ export function Translator() {
             return;
         }
 
-        // Use the top of the left textarea to calculate the available height, as it's sufficient 
-        // because your left and right structures are basically aligned.
         const rect = inputEl.getBoundingClientRect();
         const availableHeight = window.innerHeight - rect.top - bottomGap;
         const dynamicMaxHeight = Math.max(minHeight, availableHeight);
@@ -171,15 +169,26 @@ export function Translator() {
     const handleTextareaKeyDown = (
         e: React.KeyboardEvent<HTMLTextAreaElement>
     ) => {
-        // cmd/ctrl + enter -> translate
-        if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        if (e.key === "Enter" && !(e.metaKey || e.ctrlKey)) {
             e.preventDefault();
             flashTranslateButtonPress();
             handleTranslateWithReset();
             return;
         }
 
-        // double esc -> clear
+        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+            const textarea = e.currentTarget;
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const value = textarea.value;
+            setSourceText(value.substring(0, start) + "\n" + value.substring(end));
+            // Set cursor position after the newline in the next render
+            setTimeout(() => {
+                textarea.selectionStart = textarea.selectionEnd = start + 1;
+            }, 0);
+            return;
+        }
+
         if (e.key === "Escape") {
             const now = Date.now();
             const threshold = 500;
@@ -202,8 +211,14 @@ export function Translator() {
             <div className="border grid grid-cols-1 sm:grid-cols-2 rounded-md bg-[#FBFBFB] dark:bg-[#0B0B0C]">
                 <div className="border-r-0 sm:border-r border-b sm:border-0 flex flex-col min-w-0">
                     <div className="border-b px-4 py-2 flex justify-between items-center">
-                        <div className="text-muted-foreground text-sm">{t("common.frame.input.auto_detect")}</div>
-
+                        <div className="flex items-center gap-2">
+                            {translationMode === "zh_en_auto" ? (
+                                <span className="text-sm text-muted-foreground">{t("common.frame.input.auto_detect")}</span>
+                            ) : (
+                                <LanguageSelectorDialog role="source" />
+                            )}
+                            <TranslationModeToggle />
+                        </div>
                         <ModelSelectorDialog />
                     </div>
 
@@ -240,8 +255,11 @@ export function Translator() {
 
                 <div className="flex flex-col relative min-w-0">
                     <div className="border-b px-4 py-2 flex justify-between items-center">
-                        <LanguageSelectorDialog />
-
+                        {translationMode === "zh_en_auto" ? (
+                            <span className="text-sm text-muted-foreground">{t("common.frame.output.zh_en_auto")}</span>
+                        ) : (
+                            <LanguageSelectorDialog />
+                        )}
                         <PromptSelectorDialog />
                     </div>
 
@@ -261,7 +279,6 @@ export function Translator() {
                         </div>
                     )}
 
-                    {/* If there is a code, prioritize i18n; if not, display the upstream message/body */}
                     {translateError && (
                         <div className="absolute inset-x-4 top-16 z-10">
                             <Alert variant="destructive">

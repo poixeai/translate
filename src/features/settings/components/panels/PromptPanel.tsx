@@ -9,14 +9,14 @@ import {
 } from "@/components/ui/table"
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { usePrompts } from "@/hooks/usePrompts";
-import type { TranslationPrompt } from "@/types/prompts";
+import { usePromptsApi, type TranslationPrompt } from "@/hooks/usePromptsApi";
+
 import PromptUpsertDialog from "./comps/PromptUpsertDialog";
 import PromptDeleteDialog from "./comps/PromptDeleteDialog";
 
 export default function PromptPanel() {
     const { t } = useTranslation();
-    const { prompts, create, update, remove } = usePrompts();
+    const { prompts, create, update, remove } = usePromptsApi();
 
     const [open, setOpen] = useState(false);
     const [editing, setEditing] = useState<TranslationPrompt | null>(null);
@@ -63,9 +63,7 @@ export default function PromptPanel() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {!prompts ? (
-                                    <p>{t("common.status.loading")}</p>
-                                ) : prompts.length === 0 ? (
+                                {prompts.length === 0 ? (
                                     <TableRow>
                                         <TableCell colSpan={4} className="text-muted-foreground">
                                             {t("common.status.no_prompts")}

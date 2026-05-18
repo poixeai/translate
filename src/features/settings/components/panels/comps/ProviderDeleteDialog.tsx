@@ -2,13 +2,13 @@ import { useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import type { ModelProvider } from "@/types/providers";
+import type { Provider } from "@/hooks/useProvidersApi";
 import { useTranslation } from "react-i18next";
 
 type Props = {
     open: boolean;
     onOpenChange: (v: boolean) => void;
-    provider?: ModelProvider | null;
+    provider?: Provider | null;
     onConform: (id: number) => Promise<void>;
 };
 

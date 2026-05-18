@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronUp, SearchIcon, Pin, PinOff } from 'lucide-react';
 import { useEffect, useMemo, useState } from "react";
 import { OpenAI } from '@lobehub/icons';
-import { useProviders } from "@/hooks/useProviders";
+import { useModels } from "@/hooks/useModels";
 import { usePinnedModels } from "@/stores/pinned.models.store";
 import { usePreferences } from "@/stores/preferences.store";
 import { useTranslation } from "react-i18next";
@@ -20,19 +20,15 @@ export default function ModelSelectorDialog() {
     const [keyword, setKeyword] = useState("");
     const { selectedModel, setSelectedModel } = usePreferences();
 
-    const { providers } = useProviders();
+    const { providers } = useModels();
     // providers -> groups
     const groups = useMemo(() => {
         if (!providers) return [];
         return providers
-            .map((p) => {
-                const models = (p.models ?? "")
-                    .split(",")
-                    .map((s) => s.trim())
-                    .filter(Boolean);
-
-                return { provider: p, models };
-            })
+            .map((p) => ({
+                provider: p,
+                models: p.models ?? [],
+            }))
             .filter((g) => g.models.length > 0);
     }, [providers]);
 

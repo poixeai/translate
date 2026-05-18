@@ -8,15 +8,33 @@ import {
 import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronUp, SearchIcon } from 'lucide-react';
 import { useMemo, useState } from "react";
-import { usePreferences } from "@/stores/preferences.store";
+import { AUTO_SOURCE_LANGUAGE, usePreferences } from "@/stores/preferences.store";
 import { useTranslation } from "react-i18next";
 import { LANGUAGES } from "@/constants/languages";
 
-export default function LanguageSelectorDialog() {
+type LanguageSelectorRole = "source" | "target";
+
+type LanguageSelectorDialogProps = {
+    role?: LanguageSelectorRole;
+    disabled?: boolean;
+};
+
+export default function LanguageSelectorDialog({
+    role = "target",
+    disabled = false,
+}: LanguageSelectorDialogProps) {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const [keyword, setKeyword] = useState("");
-    const { targetLanguage, setTargetLanguage } = usePreferences();
+    const {
+        sourceLanguage,
+        targetLanguage,
+        setSourceLanguage,
+        setTargetLanguage,
+    } = usePreferences();
+
+    const selectedLanguage = role === "source" ? sourceLanguage : targetLanguage;
+    const setSelectedLanguage = role === "source" ? setSourceLanguage : setTargetLanguage;
 
     // Sort the language list by the translated names.
     const sortedLanguages = useMemo(() => {
@@ -52,25 +70,44 @@ export default function LanguageSelectorDialog() {
         });
     }, [sortedLanguages, keyword]);
 
+    const sourceOptions = useMemo(() => {
+        if (role !== "source") return filtered;
+
+        const autoOption = {
+            code: AUTO_SOURCE_LANGUAGE,
+            i18nKey: "common.frame.input.auto_detect",
+            nativeName: t("common.frame.input.auto_detect"),
+            promptName: "Auto Detect",
+            searchTerms: ["auto", "detect", "自动", "自动检测"],
+            label: t("common.frame.input.auto_detect"),
+        };
+
+        return [autoOption, ...filtered];
+    }, [filtered, role, t]);
+
     // Two-column layout: Split into left and right columns.
-    const leftCol = useMemo(() => filtered.filter((_, i) => i % 2 === 0), [filtered]);
-    const rightCol = useMemo(() => filtered.filter((_, i) => i % 2 === 1), [filtered]);
+    const leftCol = useMemo(() => sourceOptions.filter((_, i) => i % 2 === 0), [sourceOptions]);
+    const rightCol = useMemo(() => sourceOptions.filter((_, i) => i % 2 === 1), [sourceOptions]);
 
     // Currently selected display text
     const selectedLabel = useMemo(() => {
-        const found = LANGUAGES.find((l) => l.code === targetLanguage);
+        if (role === "source" && selectedLanguage === AUTO_SOURCE_LANGUAGE) {
+            return t("common.frame.input.auto_detect");
+        }
+
+        const found = LANGUAGES.find((l) => l.code === selectedLanguage);
         return found
             ? t(found.i18nKey, { defaultValue: found.nativeName })
             : t("common.preferences.select_language.dialog_trigger");
-    }, [targetLanguage, t]);
+    }, [selectedLanguage, role, t]);
 
     const renderItem = (lang: { code: string; i18nKey: string; nativeName: string; searchTerms: string[]; label: string }) => {
-        const selected = lang.code === targetLanguage;
+        const selected = lang.code === selectedLanguage;
         return (
             <div
                 key={lang.code}
                 onClick={() => {
-                    setTargetLanguage(lang.code);
+                    setSelectedLanguage(lang.code);
                     setOpen(false);
                 }}
                 className={cn(
@@ -88,11 +125,13 @@ export default function LanguageSelectorDialog() {
     return (
         <>
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger>
+                <DialogTrigger asChild>
                     <button
+                        disabled={disabled}
                         className={cn(
                             "text-sm flex items-center gap-3 border px-3 py-1 w-fit rounded-lg hover:cursor-pointer hover:bg-[#ececec] dark:bg-[#2f2f2f] dark:hover:bg-[#424242] text-muted-foreground border-none",
-                            open && "bg-[#ececec] dark:bg-[#424242]"
+                            open && "bg-[#ececec] dark:bg-[#424242]",
+                            disabled && "opacity-60 hover:cursor-not-allowed"
                         )}
                     >
                         <span>{selectedLabel}</span>
