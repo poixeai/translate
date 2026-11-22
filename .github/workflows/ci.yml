@@ -4,7 +4,8 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - "v*"
+      # - "v*"
+      - "none"
 
 # ==== Variable modification starts. ====
 env:

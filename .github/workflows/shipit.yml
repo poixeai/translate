@@ -1,0 +1,122 @@
+# .github/workflows/shipit.yml
+# Vite 静态站点 → GitHub Release → shipit 自动部署（单机）。
+# 用法：git tag v1.2.0 && git push --tags
+#
+# 复制到其他 Vite 项目：只改 env 里标 [PROJECT] 的几行。
+# 仓库需配置：
+#   Secrets   （必需）SHIPIT_URL、SHIPIT_SECRET
+#   Variables （可选）任意 VITE_* 变量，构建时自动注入，没配置也能构建
+name: Shipit [translate] # [PROJECT]
+
+on:
+  workflow_dispatch: # 在某个 tag 上手动重新部署；必须选 tag，不能选分支
+  push:
+    tags:
+      - 'v*' # [PROJECT] 同一仓库有多个服务时，改成 web-v* 之类区分
+      - 'web-v*'
+
+env:
+  PROJECT: translate  # [PROJECT] shipit.yaml 里的项目名
+  ASSET: translate    # [PROJECT] 包名前缀，需与 shipit.yaml 的 asset 一致（缺省为项目名）
+  APP_DIR: .          # [PROJECT] Vite 项目目录（package.json 所在处）：根目录写 .，在 web 下写 web
+  BUILD_DIR: dist     # 构建产物目录，相对 APP_DIR
+  NODE_VERSION: '24'  # [PROJECT] Node 版本
+  TIMEOUT: '600'      # 等待 shipit 完成（含健康检查）的秒数
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    if: github.ref_type == 'tag' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: ${{ env.APP_DIR }}
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: ${{ env.APP_DIR }}/package-lock.json
+
+      # 可选：把仓库/组织 Variables 中所有非空的 VITE_* 注入构建环境。
+      # VITE_* 会被内联进前端 JS，属公开配置，放 Variables，不要放 Secrets。
+      # 没有配置任何 VITE_* 变量时，本步骤什么都不做。
+      - name: Inject VITE_* variables (optional)
+        env:
+          ALL_VARS: ${{ toJSON(vars) }}
+        run: |
+          set -euo pipefail
+          n=0
+          while IFS= read -r k; do
+            v=$(jq -r --arg k "$k" '.[$k]' <<<"$ALL_VARS")
+            [ -n "$v" ] || continue
+            d="EOF_$(openssl rand -hex 8)"
+            printf '%s<<%s\n%s\n%s\n' "$k" "$d" "$v" "$d" >> "$GITHUB_ENV"
+            echo "inject: $k"
+            n=$((n + 1))
+          done < <(jq -r 'keys[] | select(startswith("VITE_"))' <<<"$ALL_VARS")
+          echo "injected $n VITE_* variable(s)"
+
+      - name: Install & build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run build
+          test -f "$BUILD_DIR/index.html"
+
+      # 静态产物：单个与 CPU 架构无关的包，文件名必须是 <asset>-<tag>-any.tar.gz
+      - name: Package
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist-pkg
+          tar -czf "dist-pkg/$ASSET-$TAG-any.tar.gz" -C "$BUILD_DIR" .
+          (cd dist-pkg && sha256sum -- *.tar.gz | tee checksums.txt)
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          gh release view "$TAG" >/dev/null 2>&1 \
+            || gh release create "$TAG" --title "$TAG" --generate-notes >/dev/null 2>&1 \
+            || gh release view "$TAG" >/dev/null
+          gh release upload "$TAG" dist-pkg/* --clobber
+
+  deploy:
+    needs: release
+    # push：release 成功后部署；workflow_dispatch：release 被跳过，直接按所选 tag 重新部署
+    if: ${{ !cancelled() && (needs.release.result == 'success' || needs.release.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: ${{ github.workflow }}
+      cancel-in-progress: false
+    steps:
+      - name: Require a tag
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          [ "$REF_TYPE" = tag ] || { echo "::error::部署必须基于 tag（手动运行时请在 'Use workflow from' 里选择 tag）"; exit 1; }
+          echo "deploy tag: $REF_NAME"
+
+      - uses: beyenpay/shipit@v1
+        with:
+          tag: ${{ github.ref_name }}
+          url: ${{ secrets.SHIPIT_URL_C_PLUS }}
+          secret: ${{ secrets.SHIPIT_SECRET_C_PLUS }}
+          project: ${{ env.PROJECT }}
+          timeout: ${{ env.TIMEOUT }}
